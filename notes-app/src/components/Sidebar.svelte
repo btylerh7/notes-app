@@ -1,4 +1,7 @@
-
+<script>
+    import {userNotes} from '../../scripts/firebase'
+    console.log($userNotes)
+</script>
 
 <nav>
     <p>Japanese</p>

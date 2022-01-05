@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection } from "firebase/firestore"
-import svelte from 'svelte'
+import { getFirestore, collection, doc, query, where, onSnapshot } from "firebase/firestore";
+import {writable} from 'svelte/store';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,4 +19,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore();
 const colRef = collection(db, "notes");
+const userQuery = query(colRef, where('username', '==', 'btylerh7'))
+// Create store of user's notes
+// export const userNotes = writable({
+//   notes: 
+// })
+export const userNotes = writable([])
+
+let allnotes = onSnapshot(userQuery, (snapshot) => {
+  snapshot.docs.forEach(doc => {
+    let currentDoc = {...doc.data(), id: doc.id}
+    userNotes.update(currentList => {
+
+      currentList = [...currentList, currentDoc]
+      
+      return currentList
+      
+      })
+      
+  })
+})
+
 

@@ -27,6 +27,21 @@ var app = (function () {
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
+    function validate_store(store, name) {
+        if (store != null && typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(store, ...callbacks) {
+        if (store == null) {
+            return noop;
+        }
+        const unsub = store.subscribe(...callbacks);
+        return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+    }
+    function component_subscribe(component, store, callback) {
+        component.$$.on_destroy.push(subscribe(store, callback));
+    }
     function append(target, node) {
         target.appendChild(node);
     }
@@ -4425,13 +4440,13 @@ var app = (function () {
      Copyright The Closure Library Authors.
      SPDX-License-Identifier: Apache-2.0
     */
-    var k$1,goog=goog||{},l=commonjsGlobal||self;function aa(){}function ba(a){var b=typeof a;b="object"!=b?b:a?Array.isArray(a)?"array":b:"null";return "array"==b||"object"==b&&"number"==typeof a.length}function p(a){var b=typeof a;return "object"==b&&null!=a||"function"==b}function da$1(a){return Object.prototype.hasOwnProperty.call(a,ea)&&a[ea]||(a[ea]=++fa$1)}var ea="closure_uid_"+(1E9*Math.random()>>>0),fa$1=0;function ha$1(a,b,c){return a.call.apply(a.bind,arguments)}
+    var k$1,goog=goog||{},l=commonjsGlobal||self;function aa$1(){}function ba(a){var b=typeof a;b="object"!=b?b:a?Array.isArray(a)?"array":b:"null";return "array"==b||"object"==b&&"number"==typeof a.length}function p(a){var b=typeof a;return "object"==b&&null!=a||"function"==b}function da$1(a){return Object.prototype.hasOwnProperty.call(a,ea$1)&&a[ea$1]||(a[ea$1]=++fa$1)}var ea$1="closure_uid_"+(1E9*Math.random()>>>0),fa$1=0;function ha$1(a,b,c){return a.call.apply(a.bind,arguments)}
     function ia$1(a,b,c){if(!a)throw Error();if(2<arguments.length){var d=Array.prototype.slice.call(arguments,2);return function(){var e=Array.prototype.slice.call(arguments);Array.prototype.unshift.apply(e,d);return a.apply(b,e)}}return function(){return a.apply(b,arguments)}}function q$1(a,b,c){Function.prototype.bind&&-1!=Function.prototype.bind.toString().indexOf("native code")?q$1=ha$1:q$1=ia$1;return q$1.apply(null,arguments)}
-    function ja(a,b){var c=Array.prototype.slice.call(arguments,1);return function(){var d=c.slice();d.push.apply(d,arguments);return a.apply(this,d)}}function t(a,b){function c(){}c.prototype=b.prototype;a.Z=b.prototype;a.prototype=new c;a.prototype.constructor=a;a.Vb=function(d,e,f){for(var h=Array(arguments.length-2),n=2;n<arguments.length;n++)h[n-2]=arguments[n];return b.prototype[e].apply(d,h)};}function v(){this.s=this.s;this.o=this.o;}var ka=0,la={};v.prototype.s=!1;v.prototype.na=function(){if(!this.s&&(this.s=!0,this.M(),0!=ka)){var a=da$1(this);delete la[a];}};v.prototype.M=function(){if(this.o)for(;this.o.length;)this.o.shift()();};const ma$1=Array.prototype.indexOf?function(a,b){return Array.prototype.indexOf.call(a,b,void 0)}:function(a,b){if("string"===typeof a)return "string"!==typeof b||1!=b.length?-1:a.indexOf(b,0);for(let c=0;c<a.length;c++)if(c in a&&a[c]===b)return c;return -1},na=Array.prototype.forEach?function(a,b,c){Array.prototype.forEach.call(a,b,c);}:function(a,b,c){const d=a.length,e="string"===typeof a?a.split(""):a;for(let f=0;f<d;f++)f in e&&b.call(c,e[f],f,a);};
-    function oa(a){a:{var b=pa;const c=a.length,d="string"===typeof a?a.split(""):a;for(let e=0;e<c;e++)if(e in d&&b.call(void 0,d[e],e,a)){b=e;break a}b=-1;}return 0>b?null:"string"===typeof a?a.charAt(b):a[b]}function qa(a){return Array.prototype.concat.apply([],arguments)}function ra(a){const b=a.length;if(0<b){const c=Array(b);for(let d=0;d<b;d++)c[d]=a[d];return c}return []}function sa(a){return /^[\s\xa0]*$/.test(a)}var ta=String.prototype.trim?function(a){return a.trim()}:function(a){return /^[\s\xa0]*([\s\S]*?)[\s\xa0]*$/.exec(a)[1]};function w(a,b){return -1!=a.indexOf(b)}function ua(a,b){return a<b?-1:a>b?1:0}var x;a:{var va=l.navigator;if(va){var wa=va.userAgent;if(wa){x=wa;break a}}x="";}function xa(a,b,c){for(const d in a)b.call(c,a[d],d,a);}function ya(a){const b={};for(const c in a)b[c]=a[c];return b}var za$1="constructor hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString toString valueOf".split(" ");function Aa$1(a,b){let c,d;for(let e=1;e<arguments.length;e++){d=arguments[e];for(c in d)a[c]=d[c];for(let f=0;f<za$1.length;f++)c=za$1[f],Object.prototype.hasOwnProperty.call(d,c)&&(a[c]=d[c]);}}function Ca(a){Ca[" "](a);return a}Ca[" "]=aa;function Fa(a){var b=Ga$1;return Object.prototype.hasOwnProperty.call(b,9)?b[9]:b[9]=a(9)}var Ha$1=w(x,"Opera"),y=w(x,"Trident")||w(x,"MSIE"),Ia$1=w(x,"Edge"),Ja$1=Ia$1||y,Ka=w(x,"Gecko")&&!(w(x.toLowerCase(),"webkit")&&!w(x,"Edge"))&&!(w(x,"Trident")||w(x,"MSIE"))&&!w(x,"Edge"),La=w(x.toLowerCase(),"webkit")&&!w(x,"Edge");function Ma(){var a=l.document;return a?a.documentMode:void 0}var Na;
+    function ja(a,b){var c=Array.prototype.slice.call(arguments,1);return function(){var d=c.slice();d.push.apply(d,arguments);return a.apply(this,d)}}function t(a,b){function c(){}c.prototype=b.prototype;a.Z=b.prototype;a.prototype=new c;a.prototype.constructor=a;a.Vb=function(d,e,f){for(var h=Array(arguments.length-2),n=2;n<arguments.length;n++)h[n-2]=arguments[n];return b.prototype[e].apply(d,h)};}function v(){this.s=this.s;this.o=this.o;}var ka=0,la$1={};v.prototype.s=!1;v.prototype.na=function(){if(!this.s&&(this.s=!0,this.M(),0!=ka)){var a=da$1(this);delete la$1[a];}};v.prototype.M=function(){if(this.o)for(;this.o.length;)this.o.shift()();};const ma$1=Array.prototype.indexOf?function(a,b){return Array.prototype.indexOf.call(a,b,void 0)}:function(a,b){if("string"===typeof a)return "string"!==typeof b||1!=b.length?-1:a.indexOf(b,0);for(let c=0;c<a.length;c++)if(c in a&&a[c]===b)return c;return -1},na$1=Array.prototype.forEach?function(a,b,c){Array.prototype.forEach.call(a,b,c);}:function(a,b,c){const d=a.length,e="string"===typeof a?a.split(""):a;for(let f=0;f<d;f++)f in e&&b.call(c,e[f],f,a);};
+    function oa$1(a){a:{var b=pa$1;const c=a.length,d="string"===typeof a?a.split(""):a;for(let e=0;e<c;e++)if(e in d&&b.call(void 0,d[e],e,a)){b=e;break a}b=-1;}return 0>b?null:"string"===typeof a?a.charAt(b):a[b]}function qa$1(a){return Array.prototype.concat.apply([],arguments)}function ra$1(a){const b=a.length;if(0<b){const c=Array(b);for(let d=0;d<b;d++)c[d]=a[d];return c}return []}function sa$1(a){return /^[\s\xa0]*$/.test(a)}var ta$1=String.prototype.trim?function(a){return a.trim()}:function(a){return /^[\s\xa0]*([\s\S]*?)[\s\xa0]*$/.exec(a)[1]};function w(a,b){return -1!=a.indexOf(b)}function ua$1(a,b){return a<b?-1:a>b?1:0}var x;a:{var va=l.navigator;if(va){var wa=va.userAgent;if(wa){x=wa;break a}}x="";}function xa$1(a,b,c){for(const d in a)b.call(c,a[d],d,a);}function ya$1(a){const b={};for(const c in a)b[c]=a[c];return b}var za$1="constructor hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString toString valueOf".split(" ");function Aa$1(a,b){let c,d;for(let e=1;e<arguments.length;e++){d=arguments[e];for(c in d)a[c]=d[c];for(let f=0;f<za$1.length;f++)c=za$1[f],Object.prototype.hasOwnProperty.call(d,c)&&(a[c]=d[c]);}}function Ca(a){Ca[" "](a);return a}Ca[" "]=aa$1;function Fa(a){var b=Ga$1;return Object.prototype.hasOwnProperty.call(b,9)?b[9]:b[9]=a(9)}var Ha$1=w(x,"Opera"),y=w(x,"Trident")||w(x,"MSIE"),Ia$1=w(x,"Edge"),Ja$1=Ia$1||y,Ka=w(x,"Gecko")&&!(w(x.toLowerCase(),"webkit")&&!w(x,"Edge"))&&!(w(x,"Trident")||w(x,"MSIE"))&&!w(x,"Edge"),La=w(x.toLowerCase(),"webkit")&&!w(x,"Edge");function Ma(){var a=l.document;return a?a.documentMode:void 0}var Na;
     a:{var Oa$1="",Pa=function(){var a=x;if(Ka)return /rv:([^\);]+)(\)|;)/.exec(a);if(Ia$1)return /Edge\/([\d\.]+)/.exec(a);if(y)return /\b(?:MSIE|rv)[: ]([^\);]+)(\)|;)/.exec(a);if(La)return /WebKit\/(\S+)/.exec(a);if(Ha$1)return /(?:Version)[ \/]?(\S+)/.exec(a)}();Pa&&(Oa$1=Pa?Pa[1]:"");if(y){var Qa=Ma();if(null!=Qa&&Qa>parseFloat(Oa$1)){Na=String(Qa);break a}}Na=Oa$1;}var Ga$1={};
-    function Ra(){return Fa(function(){let a=0;const b=ta(String(Na)).split("."),c=ta("9").split("."),d=Math.max(b.length,c.length);for(let h=0;0==a&&h<d;h++){var e=b[h]||"",f=c[h]||"";do{e=/(\d*)(\D*)(.*)/.exec(e)||["","","",""];f=/(\d*)(\D*)(.*)/.exec(f)||["","","",""];if(0==e[0].length&&0==f[0].length)break;a=ua(0==e[1].length?0:parseInt(e[1],10),0==f[1].length?0:parseInt(f[1],10))||ua(0==e[2].length,0==f[2].length)||ua(e[2],f[2]);e=e[3];f=f[3];}while(0==a)}return 0<=a})}var Sa;
-    if(l.document&&y){var Ta=Ma();Sa=Ta?Ta:parseInt(Na,10)||void 0;}else Sa=void 0;var Ua=Sa;var Va=function(){if(!l.addEventListener||!Object.defineProperty)return !1;var a=!1,b=Object.defineProperty({},"passive",{get:function(){a=!0;}});try{l.addEventListener("test",aa,b),l.removeEventListener("test",aa,b);}catch(c){}return a}();function z(a,b){this.type=a;this.g=this.target=b;this.defaultPrevented=!1;}z.prototype.h=function(){this.defaultPrevented=!0;};function A(a,b){z.call(this,a?a.type:"");this.relatedTarget=this.g=this.target=null;this.button=this.screenY=this.screenX=this.clientY=this.clientX=0;this.key="";this.metaKey=this.shiftKey=this.altKey=this.ctrlKey=!1;this.state=null;this.pointerId=0;this.pointerType="";this.i=null;if(a){var c=this.type=a.type,d=a.changedTouches&&a.changedTouches.length?a.changedTouches[0]:null;this.target=a.target||a.srcElement;this.g=b;if(b=a.relatedTarget){if(Ka){a:{try{Ca(b.nodeName);var e=!0;break a}catch(f){}e=
+    function Ra$1(){return Fa(function(){let a=0;const b=ta$1(String(Na)).split("."),c=ta$1("9").split("."),d=Math.max(b.length,c.length);for(let h=0;0==a&&h<d;h++){var e=b[h]||"",f=c[h]||"";do{e=/(\d*)(\D*)(.*)/.exec(e)||["","","",""];f=/(\d*)(\D*)(.*)/.exec(f)||["","","",""];if(0==e[0].length&&0==f[0].length)break;a=ua$1(0==e[1].length?0:parseInt(e[1],10),0==f[1].length?0:parseInt(f[1],10))||ua$1(0==e[2].length,0==f[2].length)||ua$1(e[2],f[2]);e=e[3];f=f[3];}while(0==a)}return 0<=a})}var Sa;
+    if(l.document&&y){var Ta$1=Ma();Sa=Ta$1?Ta$1:parseInt(Na,10)||void 0;}else Sa=void 0;var Ua=Sa;var Va=function(){if(!l.addEventListener||!Object.defineProperty)return !1;var a=!1,b=Object.defineProperty({},"passive",{get:function(){a=!0;}});try{l.addEventListener("test",aa$1,b),l.removeEventListener("test",aa$1,b);}catch(c){}return a}();function z(a,b){this.type=a;this.g=this.target=b;this.defaultPrevented=!1;}z.prototype.h=function(){this.defaultPrevented=!0;};function A(a,b){z.call(this,a?a.type:"");this.relatedTarget=this.g=this.target=null;this.button=this.screenY=this.screenX=this.clientY=this.clientX=0;this.key="";this.metaKey=this.shiftKey=this.altKey=this.ctrlKey=!1;this.state=null;this.pointerId=0;this.pointerType="";this.i=null;if(a){var c=this.type=a.type,d=a.changedTouches&&a.changedTouches.length?a.changedTouches[0]:null;this.target=a.target||a.srcElement;this.g=b;if(b=a.relatedTarget){if(Ka){a:{try{Ca(b.nodeName);var e=!0;break a}catch(f){}e=
     !1;}e||(b=null);}}else "mouseover"==c?b=a.fromElement:"mouseout"==c&&(b=a.toElement);this.relatedTarget=b;d?(this.clientX=void 0!==d.clientX?d.clientX:d.pageX,this.clientY=void 0!==d.clientY?d.clientY:d.pageY,this.screenX=d.screenX||0,this.screenY=d.screenY||0):(this.clientX=void 0!==a.clientX?a.clientX:a.pageX,this.clientY=void 0!==a.clientY?a.clientY:a.pageY,this.screenX=a.screenX||0,this.screenY=a.screenY||0);this.button=a.button;this.key=a.key||"";this.ctrlKey=a.ctrlKey;this.altKey=a.altKey;this.shiftKey=
     a.shiftKey;this.metaKey=a.metaKey;this.pointerId=a.pointerId||0;this.pointerType="string"===typeof a.pointerType?a.pointerType:Wa$1[a.pointerType]||"";this.state=a.state;this.i=a;a.defaultPrevented&&A.Z.h.call(this);}}t(A,z);var Wa$1={2:"touch",3:"pen",4:"mouse"};A.prototype.h=function(){A.Z.h.call(this);var a=this.i;a.preventDefault?a.preventDefault():a.returnValue=!1;};var B$1="closure_listenable_"+(1E6*Math.random()|0);var Xa=0;function Ya(a,b,c,d,e){this.listener=a;this.proxy=null;this.src=b;this.type=c;this.capture=!!d;this.ia=e;this.key=++Xa;this.ca=this.fa=!1;}function Za(a){a.ca=!0;a.listener=null;a.proxy=null;a.src=null;a.ia=null;}function $a$1(a){this.src=a;this.g={};this.h=0;}$a$1.prototype.add=function(a,b,c,d,e){var f=a.toString();a=this.g[f];a||(a=this.g[f]=[],this.h++);var h=ab(a,b,d,e);-1<h?(b=a[h],c||(b.fa=!1)):(b=new Ya(b,this.src,f,!!d,e),b.fa=c,a.push(b));return b};function bb(a,b){var c=b.type;if(c in a.g){var d=a.g[c],e=ma$1(d,b),f;(f=0<=e)&&Array.prototype.splice.call(d,e,1);f&&(Za(b),0==a.g[c].length&&(delete a.g[c],a.h--));}}
     function ab(a,b,c,d){for(var e=0;e<a.length;++e){var f=a[e];if(!f.ca&&f.listener==b&&f.capture==!!c&&f.ia==d)return e}return -1}var cb="closure_lm_"+(1E6*Math.random()|0),db$1={};function fb(a,b,c,d,e){if(d&&d.once)return gb(a,b,c,d,e);if(Array.isArray(b)){for(var f=0;f<b.length;f++)fb(a,b[f],c,d,e);return null}c=hb(c);return a&&a[B$1]?a.N(b,c,p(d)?!!d.capture:!!d,e):ib(a,b,c,!1,d,e)}
@@ -4444,51 +4459,51 @@ var app = (function () {
     C$1.prototype.M=function(){C$1.Z.M.call(this);if(this.i){var a=this.i,c;for(c in a.g){for(var d=a.g[c],e=0;e<d.length;e++)Za(d[e]);delete a.g[c];a.h--;}}this.I=null;};C$1.prototype.N=function(a,b,c,d){return this.i.add(String(a),b,!1,c,d)};C$1.prototype.O=function(a,b,c,d){return this.i.add(String(a),b,!0,c,d)};
     function qb(a,b,c,d){b=a.i.g[String(b)];if(!b)return !0;b=b.concat();for(var e=!0,f=0;f<b.length;++f){var h=b[f];if(h&&!h.ca&&h.capture==c){var n=h.listener,u=h.ia||h.src;h.fa&&bb(a.i,h);e=!1!==n.call(u,d)&&e;}}return e&&!d.defaultPrevented}var rb=l.JSON.stringify;function sb(){var a=tb;let b=null;a.g&&(b=a.g,a.g=a.g.next,a.g||(a.h=null),b.next=null);return b}class ub{constructor(){this.h=this.g=null;}add(a,b){const c=vb.get();c.set(a,b);this.h?this.h.next=c:this.g=c;this.h=c;}}var vb=new class{constructor(a,b){this.i=a;this.j=b;this.h=0;this.g=null;}get(){let a;0<this.h?(this.h--,a=this.g,this.g=a.next,a.next=null):a=this.i();return a}}(()=>new wb,a=>a.reset());
     class wb{constructor(){this.next=this.g=this.h=null;}set(a,b){this.h=a;this.g=b;this.next=null;}reset(){this.next=this.g=this.h=null;}}function yb(a){l.setTimeout(()=>{throw a;},0);}function zb(a,b){Ab||Bb();Cb||(Ab(),Cb=!0);tb.add(a,b);}var Ab;function Bb(){var a=l.Promise.resolve(void 0);Ab=function(){a.then(Db);};}var Cb=!1,tb=new ub;function Db(){for(var a;a=sb();){try{a.h.call(a.g);}catch(c){yb(c);}var b=vb;b.j(a);100>b.h&&(b.h++,a.next=b.g,b.g=a);}Cb=!1;}function Eb(a,b){C$1.call(this);this.h=a||1;this.g=b||l;this.j=q$1(this.kb,this);this.l=Date.now();}t(Eb,C$1);k$1=Eb.prototype;k$1.da=!1;k$1.S=null;k$1.kb=function(){if(this.da){var a=Date.now()-this.l;0<a&&a<.8*this.h?this.S=this.g.setTimeout(this.j,this.h-a):(this.S&&(this.g.clearTimeout(this.S),this.S=null),D$1(this,"tick"),this.da&&(Fb(this),this.start()));}};k$1.start=function(){this.da=!0;this.S||(this.S=this.g.setTimeout(this.j,this.h),this.l=Date.now());};
-    function Fb(a){a.da=!1;a.S&&(a.g.clearTimeout(a.S),a.S=null);}k$1.M=function(){Eb.Z.M.call(this);Fb(this);delete this.g;};function Gb(a,b,c){if("function"===typeof a)c&&(a=q$1(a,c));else if(a&&"function"==typeof a.handleEvent)a=q$1(a.handleEvent,a);else throw Error("Invalid listener argument");return 2147483647<Number(b)?-1:l.setTimeout(a,b||0)}function Hb(a){a.g=Gb(()=>{a.g=null;a.i&&(a.i=!1,Hb(a));},a.j);const b=a.h;a.h=null;a.m.apply(null,b);}class Ib extends v{constructor(a,b){super();this.m=a;this.j=b;this.h=null;this.i=!1;this.g=null;}l(a){this.h=arguments;this.g?this.i=!0:Hb(this);}M(){super.M();this.g&&(l.clearTimeout(this.g),this.g=null,this.i=!1,this.h=null);}}function E(a){v.call(this);this.h=a;this.g={};}t(E,v);var Jb=[];function Kb(a,b,c,d){Array.isArray(c)||(c&&(Jb[0]=c.toString()),c=Jb);for(var e=0;e<c.length;e++){var f=fb(b,c[e],d||a.handleEvent,!1,a.h||a);if(!f)break;a.g[f.key]=f;}}function Lb(a){xa(a.g,function(b,c){this.g.hasOwnProperty(c)&&ob(b);},a);a.g={};}E.prototype.M=function(){E.Z.M.call(this);Lb(this);};E.prototype.handleEvent=function(){throw Error("EventHandler.handleEvent not implemented");};function Mb(){this.g=!0;}Mb.prototype.Aa=function(){this.g=!1;};function Nb(a,b,c,d,e,f){a.info(function(){if(a.g)if(f){var h="";for(var n=f.split("&"),u=0;u<n.length;u++){var m=n[u].split("=");if(1<m.length){var r=m[0];m=m[1];var G=r.split("_");h=2<=G.length&&"type"==G[1]?h+(r+"="+m+"&"):h+(r+"=redacted&");}}}else h=null;else h=f;return "XMLHTTP REQ ("+d+") [attempt "+e+"]: "+b+"\n"+c+"\n"+h});}
+    function Fb(a){a.da=!1;a.S&&(a.g.clearTimeout(a.S),a.S=null);}k$1.M=function(){Eb.Z.M.call(this);Fb(this);delete this.g;};function Gb(a,b,c){if("function"===typeof a)c&&(a=q$1(a,c));else if(a&&"function"==typeof a.handleEvent)a=q$1(a.handleEvent,a);else throw Error("Invalid listener argument");return 2147483647<Number(b)?-1:l.setTimeout(a,b||0)}function Hb(a){a.g=Gb(()=>{a.g=null;a.i&&(a.i=!1,Hb(a));},a.j);const b=a.h;a.h=null;a.m.apply(null,b);}class Ib extends v{constructor(a,b){super();this.m=a;this.j=b;this.h=null;this.i=!1;this.g=null;}l(a){this.h=arguments;this.g?this.i=!0:Hb(this);}M(){super.M();this.g&&(l.clearTimeout(this.g),this.g=null,this.i=!1,this.h=null);}}function E(a){v.call(this);this.h=a;this.g={};}t(E,v);var Jb=[];function Kb(a,b,c,d){Array.isArray(c)||(c&&(Jb[0]=c.toString()),c=Jb);for(var e=0;e<c.length;e++){var f=fb(b,c[e],d||a.handleEvent,!1,a.h||a);if(!f)break;a.g[f.key]=f;}}function Lb(a){xa$1(a.g,function(b,c){this.g.hasOwnProperty(c)&&ob(b);},a);a.g={};}E.prototype.M=function(){E.Z.M.call(this);Lb(this);};E.prototype.handleEvent=function(){throw Error("EventHandler.handleEvent not implemented");};function Mb(){this.g=!0;}Mb.prototype.Aa=function(){this.g=!1;};function Nb(a,b,c,d,e,f){a.info(function(){if(a.g)if(f){var h="";for(var n=f.split("&"),u=0;u<n.length;u++){var m=n[u].split("=");if(1<m.length){var r=m[0];m=m[1];var G=r.split("_");h=2<=G.length&&"type"==G[1]?h+(r+"="+m+"&"):h+(r+"=redacted&");}}}else h=null;else h=f;return "XMLHTTP REQ ("+d+") [attempt "+e+"]: "+b+"\n"+c+"\n"+h});}
     function Ob(a,b,c,d,e,f,h){a.info(function(){return "XMLHTTP RESP ("+d+") [ attempt "+e+"]: "+b+"\n"+c+"\n"+f+" "+h});}function F$1(a,b,c,d){a.info(function(){return "XMLHTTP TEXT ("+b+"): "+Pb(a,c)+(d?" "+d:"")});}function Qb(a,b){a.info(function(){return "TIMEOUT: "+b});}Mb.prototype.info=function(){};
     function Pb(a,b){if(!a.g)return b;if(!b)return null;try{var c=JSON.parse(b);if(c)for(a=0;a<c.length;a++)if(Array.isArray(c[a])){var d=c[a];if(!(2>d.length)){var e=d[1];if(Array.isArray(e)&&!(1>e.length)){var f=e[0];if("noop"!=f&&"stop"!=f&&"close"!=f)for(var h=1;h<e.length;h++)e[h]="";}}}return rb(c)}catch(n){return b}}var H$1={},Rb=null;function Sb(){return Rb=Rb||new C$1}H$1.Ma="serverreachability";function Tb(a){z.call(this,H$1.Ma,a);}t(Tb,z);function I(a){const b=Sb();D$1(b,new Tb(b,a));}H$1.STAT_EVENT="statevent";function Ub(a,b){z.call(this,H$1.STAT_EVENT,a);this.stat=b;}t(Ub,z);function J$1(a){const b=Sb();D$1(b,new Ub(b,a));}H$1.Na="timingevent";function Vb(a,b){z.call(this,H$1.Na,a);this.size=b;}t(Vb,z);
-    function K$1(a,b){if("function"!==typeof a)throw Error("Fn must not be null and must be a function");return l.setTimeout(function(){a();},b)}var Wb={NO_ERROR:0,lb:1,yb:2,xb:3,sb:4,wb:5,zb:6,Ja:7,TIMEOUT:8,Cb:9};var Xb={qb:"complete",Mb:"success",Ka:"error",Ja:"abort",Eb:"ready",Fb:"readystatechange",TIMEOUT:"timeout",Ab:"incrementaldata",Db:"progress",tb:"downloadprogress",Ub:"uploadprogress"};function Yb(){}Yb.prototype.h=null;function Zb(a){return a.h||(a.h=a.i())}function $b(){}var L$1={OPEN:"a",pb:"b",Ka:"c",Bb:"d"};function ac(){z.call(this,"d");}t(ac,z);function bc$1(){z.call(this,"c");}t(bc$1,z);var cc;function dc$1(){}t(dc$1,Yb);dc$1.prototype.g=function(){return new XMLHttpRequest};dc$1.prototype.i=function(){return {}};cc=new dc$1;function M$1(a,b,c,d){this.l=a;this.j=b;this.m=c;this.X=d||1;this.V=new E(this);this.P=ec;a=Ja$1?125:void 0;this.W=new Eb(a);this.H=null;this.i=!1;this.s=this.A=this.v=this.K=this.F=this.Y=this.B=null;this.D=[];this.g=null;this.C=0;this.o=this.u=null;this.N=-1;this.I=!1;this.O=0;this.L=null;this.aa=this.J=this.$=this.U=!1;this.h=new fc$1;}function fc$1(){this.i=null;this.g="";this.h=!1;}var ec=45E3,gc$1={},hc={};k$1=M$1.prototype;k$1.setTimeout=function(a){this.P=a;};
-    function ic(a,b,c){a.K=1;a.v=jc(N$1(b));a.s=c;a.U=!0;kc$1(a,null);}function kc$1(a,b){a.F=Date.now();lc(a);a.A=N$1(a.v);var c=a.A,d=a.X;Array.isArray(d)||(d=[String(d)]);mc$1(c.h,"t",d);a.C=0;c=a.l.H;a.h=new fc$1;a.g=nc(a.l,c?b:null,!a.s);0<a.O&&(a.L=new Ib(q$1(a.Ia,a,a.g),a.O));Kb(a.V,a.g,"readystatechange",a.gb);b=a.H?ya(a.H):{};a.s?(a.u||(a.u="POST"),b["Content-Type"]="application/x-www-form-urlencoded",a.g.ea(a.A,a.u,a.s,b)):(a.u="GET",a.g.ea(a.A,a.u,null,b));I(1);Nb(a.j,a.u,a.A,a.m,a.X,a.s);}
+    function K$1(a,b){if("function"!==typeof a)throw Error("Fn must not be null and must be a function");return l.setTimeout(function(){a();},b)}var Wb={NO_ERROR:0,lb:1,yb:2,xb:3,sb:4,wb:5,zb:6,Ja:7,TIMEOUT:8,Cb:9};var Xb={qb:"complete",Mb:"success",Ka:"error",Ja:"abort",Eb:"ready",Fb:"readystatechange",TIMEOUT:"timeout",Ab:"incrementaldata",Db:"progress",tb:"downloadprogress",Ub:"uploadprogress"};function Yb(){}Yb.prototype.h=null;function Zb(a){return a.h||(a.h=a.i())}function $b(){}var L$1={OPEN:"a",pb:"b",Ka:"c",Bb:"d"};function ac(){z.call(this,"d");}t(ac,z);function bc$1(){z.call(this,"c");}t(bc$1,z);var cc;function dc$1(){}t(dc$1,Yb);dc$1.prototype.g=function(){return new XMLHttpRequest};dc$1.prototype.i=function(){return {}};cc=new dc$1;function M$1(a,b,c,d){this.l=a;this.j=b;this.m=c;this.X=d||1;this.V=new E(this);this.P=ec$1;a=Ja$1?125:void 0;this.W=new Eb(a);this.H=null;this.i=!1;this.s=this.A=this.v=this.K=this.F=this.Y=this.B=null;this.D=[];this.g=null;this.C=0;this.o=this.u=null;this.N=-1;this.I=!1;this.O=0;this.L=null;this.aa=this.J=this.$=this.U=!1;this.h=new fc$1;}function fc$1(){this.i=null;this.g="";this.h=!1;}var ec$1=45E3,gc$1={},hc={};k$1=M$1.prototype;k$1.setTimeout=function(a){this.P=a;};
+    function ic(a,b,c){a.K=1;a.v=jc(N$1(b));a.s=c;a.U=!0;kc$1(a,null);}function kc$1(a,b){a.F=Date.now();lc(a);a.A=N$1(a.v);var c=a.A,d=a.X;Array.isArray(d)||(d=[String(d)]);mc$1(c.h,"t",d);a.C=0;c=a.l.H;a.h=new fc$1;a.g=nc(a.l,c?b:null,!a.s);0<a.O&&(a.L=new Ib(q$1(a.Ia,a,a.g),a.O));Kb(a.V,a.g,"readystatechange",a.gb);b=a.H?ya$1(a.H):{};a.s?(a.u||(a.u="POST"),b["Content-Type"]="application/x-www-form-urlencoded",a.g.ea(a.A,a.u,a.s,b)):(a.u="GET",a.g.ea(a.A,a.u,null,b));I(1);Nb(a.j,a.u,a.A,a.m,a.X,a.s);}
     k$1.gb=function(a){a=a.target;const b=this.L;b&&3==O$1(a)?b.l():this.Ia(a);};
     k$1.Ia=function(a){try{if(a==this.g)a:{const r=O$1(this.g);var b=this.g.Da();const G=this.g.ba();if(!(3>r)&&(3!=r||Ja$1||this.g&&(this.h.h||this.g.ga()||oc(this.g)))){this.I||4!=r||7==b||(8==b||0>=G?I(3):I(2));pc$1(this);var c=this.g.ba();this.N=c;b:if(qc(this)){var d=oc(this.g);a="";var e=d.length,f=4==O$1(this.g);if(!this.h.i){if("undefined"===typeof TextDecoder){P(this);rc(this);var h="";break b}this.h.i=new l.TextDecoder;}for(b=0;b<e;b++)this.h.h=!0,a+=this.h.i.decode(d[b],{stream:f&&b==e-1});d.splice(0,
-    e);this.h.g+=a;this.C=0;h=this.h.g;}else h=this.g.ga();this.i=200==c;Ob(this.j,this.u,this.A,this.m,this.X,r,c);if(this.i){if(this.$&&!this.J){b:{if(this.g){var n,u=this.g;if((n=u.g?u.g.getResponseHeader("X-HTTP-Initial-Response"):null)&&!sa(n)){var m=n;break b}}m=null;}if(c=m)F$1(this.j,this.m,c,"Initial handshake response via X-HTTP-Initial-Response"),this.J=!0,sc(this,c);else {this.i=!1;this.o=3;J$1(12);P(this);rc(this);break a}}this.U?(tc$1(this,r,h),Ja$1&&this.i&&3==r&&(Kb(this.V,this.W,"tick",this.fb),
+    e);this.h.g+=a;this.C=0;h=this.h.g;}else h=this.g.ga();this.i=200==c;Ob(this.j,this.u,this.A,this.m,this.X,r,c);if(this.i){if(this.$&&!this.J){b:{if(this.g){var n,u=this.g;if((n=u.g?u.g.getResponseHeader("X-HTTP-Initial-Response"):null)&&!sa$1(n)){var m=n;break b}}m=null;}if(c=m)F$1(this.j,this.m,c,"Initial handshake response via X-HTTP-Initial-Response"),this.J=!0,sc(this,c);else {this.i=!1;this.o=3;J$1(12);P(this);rc(this);break a}}this.U?(tc$1(this,r,h),Ja$1&&this.i&&3==r&&(Kb(this.V,this.W,"tick",this.fb),
     this.W.start())):(F$1(this.j,this.m,h,null),sc(this,h));4==r&&P(this);this.i&&!this.I&&(4==r?uc(this.l,this):(this.i=!1,lc(this)));}else 400==c&&0<h.indexOf("Unknown SID")?(this.o=3,J$1(12)):(this.o=0,J$1(13)),P(this),rc(this);}}}catch(r){}finally{}};function qc(a){return a.g?"GET"==a.u&&2!=a.K&&a.l.Ba:!1}
     function tc$1(a,b,c){let d=!0,e;for(;!a.I&&a.C<c.length;)if(e=vc$1(a,c),e==hc){4==b&&(a.o=4,J$1(14),d=!1);F$1(a.j,a.m,null,"[Incomplete Response]");break}else if(e==gc$1){a.o=4;J$1(15);F$1(a.j,a.m,c,"[Invalid Chunk]");d=!1;break}else F$1(a.j,a.m,e,null),sc(a,e);qc(a)&&e!=hc&&e!=gc$1&&(a.h.g="",a.C=0);4!=b||0!=c.length||a.h.h||(a.o=1,J$1(16),d=!1);a.i=a.i&&d;d?0<c.length&&!a.aa&&(a.aa=!0,b=a.l,b.g==a&&b.$&&!b.L&&(b.h.info("Great, no buffering proxy detected. Bytes received: "+c.length),wc$1(b),b.L=!0,J$1(11))):(F$1(a.j,a.m,
-    c,"[Invalid Chunked Response]"),P(a),rc(a));}k$1.fb=function(){if(this.g){var a=O$1(this.g),b=this.g.ga();this.C<b.length&&(pc$1(this),tc$1(this,a,b),this.i&&4!=a&&lc(this));}};function vc$1(a,b){var c=a.C,d=b.indexOf("\n",c);if(-1==d)return hc;c=Number(b.substring(c,d));if(isNaN(c))return gc$1;d+=1;if(d+c>b.length)return hc;b=b.substr(d,c);a.C=d+c;return b}k$1.cancel=function(){this.I=!0;P(this);};function lc(a){a.Y=Date.now()+a.P;xc(a,a.P);}
-    function xc(a,b){if(null!=a.B)throw Error("WatchDog timer not null");a.B=K$1(q$1(a.eb,a),b);}function pc$1(a){a.B&&(l.clearTimeout(a.B),a.B=null);}k$1.eb=function(){this.B=null;const a=Date.now();0<=a-this.Y?(Qb(this.j,this.A),2!=this.K&&(I(3),J$1(17)),P(this),this.o=2,rc(this)):xc(this,this.Y-a);};function rc(a){0==a.l.G||a.I||uc(a.l,a);}function P(a){pc$1(a);var b=a.L;b&&"function"==typeof b.na&&b.na();a.L=null;Fb(a.W);Lb(a.V);a.g&&(b=a.g,a.g=null,b.abort(),b.na());}
-    function sc(a,b){try{var c=a.l;if(0!=c.G&&(c.g==a||yc$1(c.i,a)))if(c.I=a.N,!a.J&&yc$1(c.i,a)&&3==c.G){try{var d=c.Ca.g.parse(b);}catch(m){d=null;}if(Array.isArray(d)&&3==d.length){var e=d;if(0==e[0])a:{if(!c.u){if(c.g)if(c.g.F+3E3<a.F)zc(c),Ac$1(c);else break a;Bc$1(c);J$1(18);}}else c.ta=e[1],0<c.ta-c.U&&37500>e[2]&&c.N&&0==c.A&&!c.v&&(c.v=K$1(q$1(c.ab,c),6E3));if(1>=Cc(c.i)&&c.ka){try{c.ka();}catch(m){}c.ka=void 0;}}else Q$1(c,11);}else if((a.J||c.g==a)&&zc(c),!sa(b))for(e=c.Ca.g.parse(b),b=0;b<e.length;b++){let m=e[b];
+    c,"[Invalid Chunked Response]"),P(a),rc(a));}k$1.fb=function(){if(this.g){var a=O$1(this.g),b=this.g.ga();this.C<b.length&&(pc$1(this),tc$1(this,a,b),this.i&&4!=a&&lc(this));}};function vc$1(a,b){var c=a.C,d=b.indexOf("\n",c);if(-1==d)return hc;c=Number(b.substring(c,d));if(isNaN(c))return gc$1;d+=1;if(d+c>b.length)return hc;b=b.substr(d,c);a.C=d+c;return b}k$1.cancel=function(){this.I=!0;P(this);};function lc(a){a.Y=Date.now()+a.P;xc$1(a,a.P);}
+    function xc$1(a,b){if(null!=a.B)throw Error("WatchDog timer not null");a.B=K$1(q$1(a.eb,a),b);}function pc$1(a){a.B&&(l.clearTimeout(a.B),a.B=null);}k$1.eb=function(){this.B=null;const a=Date.now();0<=a-this.Y?(Qb(this.j,this.A),2!=this.K&&(I(3),J$1(17)),P(this),this.o=2,rc(this)):xc$1(this,this.Y-a);};function rc(a){0==a.l.G||a.I||uc(a.l,a);}function P(a){pc$1(a);var b=a.L;b&&"function"==typeof b.na&&b.na();a.L=null;Fb(a.W);Lb(a.V);a.g&&(b=a.g,a.g=null,b.abort(),b.na());}
+    function sc(a,b){try{var c=a.l;if(0!=c.G&&(c.g==a||yc$1(c.i,a)))if(c.I=a.N,!a.J&&yc$1(c.i,a)&&3==c.G){try{var d=c.Ca.g.parse(b);}catch(m){d=null;}if(Array.isArray(d)&&3==d.length){var e=d;if(0==e[0])a:{if(!c.u){if(c.g)if(c.g.F+3E3<a.F)zc(c),Ac$1(c);else break a;Bc$1(c);J$1(18);}}else c.ta=e[1],0<c.ta-c.U&&37500>e[2]&&c.N&&0==c.A&&!c.v&&(c.v=K$1(q$1(c.ab,c),6E3));if(1>=Cc(c.i)&&c.ka){try{c.ka();}catch(m){}c.ka=void 0;}}else Q$1(c,11);}else if((a.J||c.g==a)&&zc(c),!sa$1(b))for(e=c.Ca.g.parse(b),b=0;b<e.length;b++){let m=e[b];
     c.U=m[0];m=m[1];if(2==c.G)if("c"==m[0]){c.J=m[1];c.la=m[2];const r=m[3];null!=r&&(c.ma=r,c.h.info("VER="+c.ma));const G=m[4];null!=G&&(c.za=G,c.h.info("SVER="+c.za));const Da=m[5];null!=Da&&"number"===typeof Da&&0<Da&&(d=1.5*Da,c.K=d,c.h.info("backChannelRequestTimeoutMs_="+d));d=c;const ca=a.g;if(ca){const Ea=ca.g?ca.g.getResponseHeader("X-Client-Wire-Protocol"):null;if(Ea){var f=d.i;!f.g&&(w(Ea,"spdy")||w(Ea,"quic")||w(Ea,"h2"))&&(f.j=f.l,f.g=new Set,f.h&&(Dc$1(f,f.h),f.h=null));}if(d.D){const xb=
     ca.g?ca.g.getResponseHeader("X-HTTP-Session-Id"):null;xb&&(d.sa=xb,R(d.F,d.D,xb));}}c.G=3;c.j&&c.j.xa();c.$&&(c.O=Date.now()-a.F,c.h.info("Handshake RTT: "+c.O+"ms"));d=c;var h=a;d.oa=Ec(d,d.H?d.la:null,d.W);if(h.J){Fc(d.i,h);var n=h,u=d.K;u&&n.setTimeout(u);n.B&&(pc$1(n),lc(n));d.g=h;}else Gc(d);0<c.l.length&&Hc(c);}else "stop"!=m[0]&&"close"!=m[0]||Q$1(c,7);else 3==c.G&&("stop"==m[0]||"close"==m[0]?"stop"==m[0]?Q$1(c,7):Ic$1(c):"noop"!=m[0]&&c.j&&c.j.wa(m),c.A=0);}I(4);}catch(m){}}function Jc(a){if(a.R&&"function"==typeof a.R)return a.R();if("string"===typeof a)return a.split("");if(ba(a)){for(var b=[],c=a.length,d=0;d<c;d++)b.push(a[d]);return b}b=[];c=0;for(d in a)b[c++]=a[d];return b}
-    function Kc(a,b){if(a.forEach&&"function"==typeof a.forEach)a.forEach(b,void 0);else if(ba(a)||"string"===typeof a)na(a,b,void 0);else {if(a.T&&"function"==typeof a.T)var c=a.T();else if(a.R&&"function"==typeof a.R)c=void 0;else if(ba(a)||"string"===typeof a){c=[];for(var d=a.length,e=0;e<d;e++)c.push(e);}else for(e in c=[],d=0,a)c[d++]=e;d=Jc(a);e=d.length;for(var f=0;f<e;f++)b.call(void 0,d[f],c&&c[f],a);}}function S$1(a,b){this.h={};this.g=[];this.i=0;var c=arguments.length;if(1<c){if(c%2)throw Error("Uneven number of arguments");for(var d=0;d<c;d+=2)this.set(arguments[d],arguments[d+1]);}else if(a)if(a instanceof S$1)for(c=a.T(),d=0;d<c.length;d++)this.set(c[d],a.get(c[d]));else for(d in a)this.set(d,a[d]);}k$1=S$1.prototype;k$1.R=function(){Lc$1(this);for(var a=[],b=0;b<this.g.length;b++)a.push(this.h[this.g[b]]);return a};k$1.T=function(){Lc$1(this);return this.g.concat()};
+    function Kc(a,b){if(a.forEach&&"function"==typeof a.forEach)a.forEach(b,void 0);else if(ba(a)||"string"===typeof a)na$1(a,b,void 0);else {if(a.T&&"function"==typeof a.T)var c=a.T();else if(a.R&&"function"==typeof a.R)c=void 0;else if(ba(a)||"string"===typeof a){c=[];for(var d=a.length,e=0;e<d;e++)c.push(e);}else for(e in c=[],d=0,a)c[d++]=e;d=Jc(a);e=d.length;for(var f=0;f<e;f++)b.call(void 0,d[f],c&&c[f],a);}}function S$1(a,b){this.h={};this.g=[];this.i=0;var c=arguments.length;if(1<c){if(c%2)throw Error("Uneven number of arguments");for(var d=0;d<c;d+=2)this.set(arguments[d],arguments[d+1]);}else if(a)if(a instanceof S$1)for(c=a.T(),d=0;d<c.length;d++)this.set(c[d],a.get(c[d]));else for(d in a)this.set(d,a[d]);}k$1=S$1.prototype;k$1.R=function(){Lc$1(this);for(var a=[],b=0;b<this.g.length;b++)a.push(this.h[this.g[b]]);return a};k$1.T=function(){Lc$1(this);return this.g.concat()};
     function Lc$1(a){if(a.i!=a.g.length){for(var b=0,c=0;b<a.g.length;){var d=a.g[b];T(a.h,d)&&(a.g[c++]=d);b++;}a.g.length=c;}if(a.i!=a.g.length){var e={};for(c=b=0;b<a.g.length;)d=a.g[b],T(e,d)||(a.g[c++]=d,e[d]=1),b++;a.g.length=c;}}k$1.get=function(a,b){return T(this.h,a)?this.h[a]:b};k$1.set=function(a,b){T(this.h,a)||(this.i++,this.g.push(a));this.h[a]=b;};k$1.forEach=function(a,b){for(var c=this.T(),d=0;d<c.length;d++){var e=c[d],f=this.get(e);a.call(b,f,e,this);}};
     function T(a,b){return Object.prototype.hasOwnProperty.call(a,b)}var Mc=/^(?:([^:/?#.]+):)?(?:\/\/(?:([^\\/?#]*)@)?([^\\/?#]*?)(?::([0-9]+))?(?=[\\/?#]|$))?([^?#]+)?(?:\?([^#]*))?(?:#([\s\S]*))?$/;function Nc(a,b){if(a){a=a.split("&");for(var c=0;c<a.length;c++){var d=a[c].indexOf("="),e=null;if(0<=d){var f=a[c].substring(0,d);e=a[c].substring(d+1);}else f=a[c];b(f,e?decodeURIComponent(e.replace(/\+/g," ")):"");}}}function U(a,b){this.i=this.s=this.j="";this.m=null;this.o=this.l="";this.g=!1;if(a instanceof U){this.g=void 0!==b?b:a.g;Oc$1(this,a.j);this.s=a.s;Pc$1(this,a.i);Qc(this,a.m);this.l=a.l;b=a.h;var c=new Rc;c.i=b.i;b.g&&(c.g=new S$1(b.g),c.h=b.h);Sc(this,c);this.o=a.o;}else a&&(c=String(a).match(Mc))?(this.g=!!b,Oc$1(this,c[1]||"",!0),this.s=Tc$1(c[2]||""),Pc$1(this,c[3]||"",!0),Qc(this,c[4]),this.l=Tc$1(c[5]||"",!0),Sc(this,c[6]||"",!0),this.o=Tc$1(c[7]||"")):(this.g=!!b,this.h=new Rc(null,this.g));}
     U.prototype.toString=function(){var a=[],b=this.j;b&&a.push(Uc$1(b,Vc$1,!0),":");var c=this.i;if(c||"file"==b)a.push("//"),(b=this.s)&&a.push(Uc$1(b,Vc$1,!0),"@"),a.push(encodeURIComponent(String(c)).replace(/%25([0-9a-fA-F]{2})/g,"%$1")),c=this.m,null!=c&&a.push(":",String(c));if(c=this.l)this.i&&"/"!=c.charAt(0)&&a.push("/"),a.push(Uc$1(c,"/"==c.charAt(0)?Wc:Xc,!0));(c=this.h.toString())&&a.push("?",c);(c=this.o)&&a.push("#",Uc$1(c,Yc));return a.join("")};function N$1(a){return new U(a)}
     function Oc$1(a,b,c){a.j=c?Tc$1(b,!0):b;a.j&&(a.j=a.j.replace(/:$/,""));}function Pc$1(a,b,c){a.i=c?Tc$1(b,!0):b;}function Qc(a,b){if(b){b=Number(b);if(isNaN(b)||0>b)throw Error("Bad port number "+b);a.m=b;}else a.m=null;}function Sc(a,b,c){b instanceof Rc?(a.h=b,Zc$1(a.h,a.g)):(c||(b=Uc$1(b,$c)),a.h=new Rc(b,a.g));}function R(a,b,c){a.h.set(b,c);}function jc(a){R(a,"zx",Math.floor(2147483648*Math.random()).toString(36)+Math.abs(Math.floor(2147483648*Math.random())^Date.now()).toString(36));return a}
     function ad(a){return a instanceof U?N$1(a):new U(a,void 0)}function bd(a,b,c,d){var e=new U(null,void 0);a&&Oc$1(e,a);b&&Pc$1(e,b);c&&Qc(e,c);d&&(e.l=d);return e}function Tc$1(a,b){return a?b?decodeURI(a.replace(/%25/g,"%2525")):decodeURIComponent(a):""}function Uc$1(a,b,c){return "string"===typeof a?(a=encodeURI(a).replace(b,cd),c&&(a=a.replace(/%25([0-9a-fA-F]{2})/g,"%$1")),a):null}function cd(a){a=a.charCodeAt(0);return "%"+(a>>4&15).toString(16)+(a&15).toString(16)}
     var Vc$1=/[#\/\?@]/g,Xc=/[#\?:]/g,Wc=/[#\?]/g,$c=/[#\?@]/g,Yc=/#/g;function Rc(a,b){this.h=this.g=null;this.i=a||null;this.j=!!b;}function V(a){a.g||(a.g=new S$1,a.h=0,a.i&&Nc(a.i,function(b,c){a.add(decodeURIComponent(b.replace(/\+/g," ")),c);}));}k$1=Rc.prototype;k$1.add=function(a,b){V(this);this.i=null;a=W$1(this,a);var c=this.g.get(a);c||this.g.set(a,c=[]);c.push(b);this.h+=1;return this};
-    function dd(a,b){V(a);b=W$1(a,b);T(a.g.h,b)&&(a.i=null,a.h-=a.g.get(b).length,a=a.g,T(a.h,b)&&(delete a.h[b],a.i--,a.g.length>2*a.i&&Lc$1(a)));}function ed(a,b){V(a);b=W$1(a,b);return T(a.g.h,b)}k$1.forEach=function(a,b){V(this);this.g.forEach(function(c,d){na(c,function(e){a.call(b,e,d,this);},this);},this);};k$1.T=function(){V(this);for(var a=this.g.R(),b=this.g.T(),c=[],d=0;d<b.length;d++)for(var e=a[d],f=0;f<e.length;f++)c.push(b[d]);return c};
-    k$1.R=function(a){V(this);var b=[];if("string"===typeof a)ed(this,a)&&(b=qa(b,this.g.get(W$1(this,a))));else {a=this.g.R();for(var c=0;c<a.length;c++)b=qa(b,a[c]);}return b};k$1.set=function(a,b){V(this);this.i=null;a=W$1(this,a);ed(this,a)&&(this.h-=this.g.get(a).length);this.g.set(a,[b]);this.h+=1;return this};k$1.get=function(a,b){if(!a)return b;a=this.R(a);return 0<a.length?String(a[0]):b};function mc$1(a,b,c){dd(a,b);0<c.length&&(a.i=null,a.g.set(W$1(a,b),ra(c)),a.h+=c.length);}
+    function dd(a,b){V(a);b=W$1(a,b);T(a.g.h,b)&&(a.i=null,a.h-=a.g.get(b).length,a=a.g,T(a.h,b)&&(delete a.h[b],a.i--,a.g.length>2*a.i&&Lc$1(a)));}function ed(a,b){V(a);b=W$1(a,b);return T(a.g.h,b)}k$1.forEach=function(a,b){V(this);this.g.forEach(function(c,d){na$1(c,function(e){a.call(b,e,d,this);},this);},this);};k$1.T=function(){V(this);for(var a=this.g.R(),b=this.g.T(),c=[],d=0;d<b.length;d++)for(var e=a[d],f=0;f<e.length;f++)c.push(b[d]);return c};
+    k$1.R=function(a){V(this);var b=[];if("string"===typeof a)ed(this,a)&&(b=qa$1(b,this.g.get(W$1(this,a))));else {a=this.g.R();for(var c=0;c<a.length;c++)b=qa$1(b,a[c]);}return b};k$1.set=function(a,b){V(this);this.i=null;a=W$1(this,a);ed(this,a)&&(this.h-=this.g.get(a).length);this.g.set(a,[b]);this.h+=1;return this};k$1.get=function(a,b){if(!a)return b;a=this.R(a);return 0<a.length?String(a[0]):b};function mc$1(a,b,c){dd(a,b);0<c.length&&(a.i=null,a.g.set(W$1(a,b),ra$1(c)),a.h+=c.length);}
     k$1.toString=function(){if(this.i)return this.i;if(!this.g)return "";for(var a=[],b=this.g.T(),c=0;c<b.length;c++){var d=b[c],e=encodeURIComponent(String(d));d=this.R(d);for(var f=0;f<d.length;f++){var h=e;""!==d[f]&&(h+="="+encodeURIComponent(String(d[f])));a.push(h);}}return this.i=a.join("&")};function W$1(a,b){b=String(b);a.j&&(b=b.toLowerCase());return b}function Zc$1(a,b){b&&!a.j&&(V(a),a.i=null,a.g.forEach(function(c,d){var e=d.toLowerCase();d!=e&&(dd(this,d),mc$1(this,e,c));},a));a.j=b;}var fd=class{constructor(a,b){this.h=a;this.g=b;}};function gd(a){this.l=a||hd;l.PerformanceNavigationTiming?(a=l.performance.getEntriesByType("navigation"),a=0<a.length&&("hq"==a[0].nextHopProtocol||"h2"==a[0].nextHopProtocol)):a=!!(l.g&&l.g.Ea&&l.g.Ea()&&l.g.Ea().Zb);this.j=a?this.l:1;this.g=null;1<this.j&&(this.g=new Set);this.h=null;this.i=[];}var hd=10;function id(a){return a.h?!0:a.g?a.g.size>=a.j:!1}function Cc(a){return a.h?1:a.g?a.g.size:0}function yc$1(a,b){return a.h?a.h==b:a.g?a.g.has(b):!1}function Dc$1(a,b){a.g?a.g.add(b):a.h=b;}
-    function Fc(a,b){a.h&&a.h==b?a.h=null:a.g&&a.g.has(b)&&a.g.delete(b);}gd.prototype.cancel=function(){this.i=jd(this);if(this.h)this.h.cancel(),this.h=null;else if(this.g&&0!==this.g.size){for(const a of this.g.values())a.cancel();this.g.clear();}};function jd(a){if(null!=a.h)return a.i.concat(a.h.D);if(null!=a.g&&0!==a.g.size){let b=a.i;for(const c of a.g.values())b=b.concat(c.D);return b}return ra(a.i)}function kd(){}kd.prototype.stringify=function(a){return l.JSON.stringify(a,void 0)};kd.prototype.parse=function(a){return l.JSON.parse(a,void 0)};function ld(){this.g=new kd;}function md(a,b,c){const d=c||"";try{Kc(a,function(e,f){let h=e;p(e)&&(h=rb(e));b.push(d+f+"="+encodeURIComponent(h));});}catch(e){throw b.push(d+"type="+encodeURIComponent("_badmap")),e;}}function nd(a,b){const c=new Mb;if(l.Image){const d=new Image;d.onload=ja(od,c,d,"TestLoadImage: loaded",!0,b);d.onerror=ja(od,c,d,"TestLoadImage: error",!1,b);d.onabort=ja(od,c,d,"TestLoadImage: abort",!1,b);d.ontimeout=ja(od,c,d,"TestLoadImage: timeout",!1,b);l.setTimeout(function(){if(d.ontimeout)d.ontimeout();},1E4);d.src=a;}else b(!1);}function od(a,b,c,d,e){try{b.onload=null,b.onerror=null,b.onabort=null,b.ontimeout=null,e(d);}catch(f){}}function pd(a){this.l=a.$b||null;this.j=a.ib||!1;}t(pd,Yb);pd.prototype.g=function(){return new qd(this.l,this.j)};pd.prototype.i=function(a){return function(){return a}}({});function qd(a,b){C$1.call(this);this.D=a;this.u=b;this.m=void 0;this.readyState=rd;this.status=0;this.responseType=this.responseText=this.response=this.statusText="";this.onreadystatechange=null;this.v=new Headers;this.h=null;this.C="GET";this.B="";this.g=!1;this.A=this.j=this.l=null;}t(qd,C$1);var rd=0;k$1=qd.prototype;
+    function Fc(a,b){a.h&&a.h==b?a.h=null:a.g&&a.g.has(b)&&a.g.delete(b);}gd.prototype.cancel=function(){this.i=jd(this);if(this.h)this.h.cancel(),this.h=null;else if(this.g&&0!==this.g.size){for(const a of this.g.values())a.cancel();this.g.clear();}};function jd(a){if(null!=a.h)return a.i.concat(a.h.D);if(null!=a.g&&0!==a.g.size){let b=a.i;for(const c of a.g.values())b=b.concat(c.D);return b}return ra$1(a.i)}function kd(){}kd.prototype.stringify=function(a){return l.JSON.stringify(a,void 0)};kd.prototype.parse=function(a){return l.JSON.parse(a,void 0)};function ld(){this.g=new kd;}function md(a,b,c){const d=c||"";try{Kc(a,function(e,f){let h=e;p(e)&&(h=rb(e));b.push(d+f+"="+encodeURIComponent(h));});}catch(e){throw b.push(d+"type="+encodeURIComponent("_badmap")),e;}}function nd(a,b){const c=new Mb;if(l.Image){const d=new Image;d.onload=ja(od,c,d,"TestLoadImage: loaded",!0,b);d.onerror=ja(od,c,d,"TestLoadImage: error",!1,b);d.onabort=ja(od,c,d,"TestLoadImage: abort",!1,b);d.ontimeout=ja(od,c,d,"TestLoadImage: timeout",!1,b);l.setTimeout(function(){if(d.ontimeout)d.ontimeout();},1E4);d.src=a;}else b(!1);}function od(a,b,c,d,e){try{b.onload=null,b.onerror=null,b.onabort=null,b.ontimeout=null,e(d);}catch(f){}}function pd(a){this.l=a.$b||null;this.j=a.ib||!1;}t(pd,Yb);pd.prototype.g=function(){return new qd(this.l,this.j)};pd.prototype.i=function(a){return function(){return a}}({});function qd(a,b){C$1.call(this);this.D=a;this.u=b;this.m=void 0;this.readyState=rd;this.status=0;this.responseType=this.responseText=this.response=this.statusText="";this.onreadystatechange=null;this.v=new Headers;this.h=null;this.C="GET";this.B="";this.g=!1;this.A=this.j=this.l=null;}t(qd,C$1);var rd=0;k$1=qd.prototype;
     k$1.open=function(a,b){if(this.readyState!=rd)throw this.abort(),Error("Error reopening a connection");this.C=a;this.B=b;this.readyState=1;sd(this);};k$1.send=function(a){if(1!=this.readyState)throw this.abort(),Error("need to call open() first. ");this.g=!0;const b={headers:this.v,method:this.C,credentials:this.m,cache:void 0};a&&(b.body=a);(this.D||l).fetch(new Request(this.B,b)).then(this.Va.bind(this),this.ha.bind(this));};
     k$1.abort=function(){this.response=this.responseText="";this.v=new Headers;this.status=0;this.j&&this.j.cancel("Request was aborted.");1<=this.readyState&&this.g&&4!=this.readyState&&(this.g=!1,td(this));this.readyState=rd;};
     k$1.Va=function(a){if(this.g&&(this.l=a,this.h||(this.status=this.l.status,this.statusText=this.l.statusText,this.h=a.headers,this.readyState=2,sd(this)),this.g&&(this.readyState=3,sd(this),this.g)))if("arraybuffer"===this.responseType)a.arrayBuffer().then(this.Ta.bind(this),this.ha.bind(this));else if("undefined"!==typeof l.ReadableStream&&"body"in a){this.j=a.body.getReader();if(this.u){if(this.responseType)throw Error('responseType must be empty for "streamBinaryChunks" mode responses.');this.response=
     [];}else this.response=this.responseText="",this.A=new TextDecoder;ud(this);}else a.text().then(this.Ua.bind(this),this.ha.bind(this));};function ud(a){a.j.read().then(a.Sa.bind(a)).catch(a.ha.bind(a));}k$1.Sa=function(a){if(this.g){if(this.u&&a.value)this.response.push(a.value);else if(!this.u){var b=a.value?a.value:new Uint8Array(0);if(b=this.A.decode(b,{stream:!a.done}))this.response=this.responseText+=b;}a.done?td(this):sd(this);3==this.readyState&&ud(this);}};
     k$1.Ua=function(a){this.g&&(this.response=this.responseText=a,td(this));};k$1.Ta=function(a){this.g&&(this.response=a,td(this));};k$1.ha=function(){this.g&&td(this);};function td(a){a.readyState=4;a.l=null;a.j=null;a.A=null;sd(a);}k$1.setRequestHeader=function(a,b){this.v.append(a,b);};k$1.getResponseHeader=function(a){return this.h?this.h.get(a.toLowerCase())||"":""};
     k$1.getAllResponseHeaders=function(){if(!this.h)return "";const a=[],b=this.h.entries();for(var c=b.next();!c.done;)c=c.value,a.push(c[0]+": "+c[1]),c=b.next();return a.join("\r\n")};function sd(a){a.onreadystatechange&&a.onreadystatechange.call(a);}Object.defineProperty(qd.prototype,"withCredentials",{get:function(){return "include"===this.m},set:function(a){this.m=a?"include":"same-origin";}});var vd=l.JSON.parse;function X$1(a){C$1.call(this);this.headers=new S$1;this.u=a||null;this.h=!1;this.C=this.g=null;this.H="";this.m=0;this.j="";this.l=this.F=this.v=this.D=!1;this.B=0;this.A=null;this.J=wd;this.K=this.L=!1;}t(X$1,C$1);var wd="",xd=/^https?$/i,yd=["POST","PUT"];k$1=X$1.prototype;
-    k$1.ea=function(a,b,c,d){if(this.g)throw Error("[goog.net.XhrIo] Object is active with another request="+this.H+"; newUri="+a);b=b?b.toUpperCase():"GET";this.H=a;this.j="";this.m=0;this.D=!1;this.h=!0;this.g=this.u?this.u.g():cc.g();this.C=this.u?Zb(this.u):Zb(cc);this.g.onreadystatechange=q$1(this.Fa,this);try{this.F=!0,this.g.open(b,String(a),!0),this.F=!1;}catch(f){zd(this,f);return}a=c||"";const e=new S$1(this.headers);d&&Kc(d,function(f,h){e.set(h,f);});d=oa(e.T());c=l.FormData&&a instanceof l.FormData;
+    k$1.ea=function(a,b,c,d){if(this.g)throw Error("[goog.net.XhrIo] Object is active with another request="+this.H+"; newUri="+a);b=b?b.toUpperCase():"GET";this.H=a;this.j="";this.m=0;this.D=!1;this.h=!0;this.g=this.u?this.u.g():cc.g();this.C=this.u?Zb(this.u):Zb(cc);this.g.onreadystatechange=q$1(this.Fa,this);try{this.F=!0,this.g.open(b,String(a),!0),this.F=!1;}catch(f){zd(this,f);return}a=c||"";const e=new S$1(this.headers);d&&Kc(d,function(f,h){e.set(h,f);});d=oa$1(e.T());c=l.FormData&&a instanceof l.FormData;
     !(0<=ma$1(yd,b))||d||c||e.set("Content-Type","application/x-www-form-urlencoded;charset=utf-8");e.forEach(function(f,h){this.g.setRequestHeader(h,f);},this);this.J&&(this.g.responseType=this.J);"withCredentials"in this.g&&this.g.withCredentials!==this.L&&(this.g.withCredentials=this.L);try{Ad(this),0<this.B&&((this.K=Bd(this.g))?(this.g.timeout=this.B,this.g.ontimeout=q$1(this.pa,this)):this.A=Gb(this.pa,this.B,this)),this.v=!0,this.g.send(a),this.v=!1;}catch(f){zd(this,f);}};
-    function Bd(a){return y&&Ra()&&"number"===typeof a.timeout&&void 0!==a.ontimeout}function pa(a){return "content-type"==a.toLowerCase()}k$1.pa=function(){"undefined"!=typeof goog&&this.g&&(this.j="Timed out after "+this.B+"ms, aborting",this.m=8,D$1(this,"timeout"),this.abort(8));};function zd(a,b){a.h=!1;a.g&&(a.l=!0,a.g.abort(),a.l=!1);a.j=b;a.m=5;Cd(a);Dd(a);}function Cd(a){a.D||(a.D=!0,D$1(a,"complete"),D$1(a,"error"));}
+    function Bd(a){return y&&Ra$1()&&"number"===typeof a.timeout&&void 0!==a.ontimeout}function pa$1(a){return "content-type"==a.toLowerCase()}k$1.pa=function(){"undefined"!=typeof goog&&this.g&&(this.j="Timed out after "+this.B+"ms, aborting",this.m=8,D$1(this,"timeout"),this.abort(8));};function zd(a,b){a.h=!1;a.g&&(a.l=!0,a.g.abort(),a.l=!1);a.j=b;a.m=5;Cd(a);Dd(a);}function Cd(a){a.D||(a.D=!0,D$1(a,"complete"),D$1(a,"error"));}
     k$1.abort=function(a){this.g&&this.h&&(this.h=!1,this.l=!0,this.g.abort(),this.l=!1,this.m=a||7,D$1(this,"complete"),D$1(this,"abort"),Dd(this));};k$1.M=function(){this.g&&(this.h&&(this.h=!1,this.l=!0,this.g.abort(),this.l=!1),Dd(this,!0));X$1.Z.M.call(this);};k$1.Fa=function(){this.s||(this.F||this.v||this.l?Ed(this):this.cb());};k$1.cb=function(){Ed(this);};
     function Ed(a){if(a.h&&"undefined"!=typeof goog&&(!a.C[1]||4!=O$1(a)||2!=a.ba()))if(a.v&&4==O$1(a))Gb(a.Fa,0,a);else if(D$1(a,"readystatechange"),4==O$1(a)){a.h=!1;try{const n=a.ba();a:switch(n){case 200:case 201:case 202:case 204:case 206:case 304:case 1223:var b=!0;break a;default:b=!1;}var c;if(!(c=b)){var d;if(d=0===n){var e=String(a.H).match(Mc)[1]||null;if(!e&&l.self&&l.self.location){var f=l.self.location.protocol;e=f.substr(0,f.length-1);}d=!xd.test(e?e.toLowerCase():"");}c=d;}if(c)D$1(a,"complete"),D$1(a,
-    "success");else {a.m=6;try{var h=2<O$1(a)?a.g.statusText:"";}catch(u){h="";}a.j=h+" ["+a.ba()+"]";Cd(a);}}finally{Dd(a);}}}function Dd(a,b){if(a.g){Ad(a);const c=a.g,d=a.C[0]?aa:null;a.g=null;a.C=null;b||D$1(a,"ready");try{c.onreadystatechange=d;}catch(e){}}}function Ad(a){a.g&&a.K&&(a.g.ontimeout=null);a.A&&(l.clearTimeout(a.A),a.A=null);}function O$1(a){return a.g?a.g.readyState:0}k$1.ba=function(){try{return 2<O$1(this)?this.g.status:-1}catch(a){return -1}};
+    "success");else {a.m=6;try{var h=2<O$1(a)?a.g.statusText:"";}catch(u){h="";}a.j=h+" ["+a.ba()+"]";Cd(a);}}finally{Dd(a);}}}function Dd(a,b){if(a.g){Ad(a);const c=a.g,d=a.C[0]?aa$1:null;a.g=null;a.C=null;b||D$1(a,"ready");try{c.onreadystatechange=d;}catch(e){}}}function Ad(a){a.g&&a.K&&(a.g.ontimeout=null);a.A&&(l.clearTimeout(a.A),a.A=null);}function O$1(a){return a.g?a.g.readyState:0}k$1.ba=function(){try{return 2<O$1(this)?this.g.status:-1}catch(a){return -1}};
     k$1.ga=function(){try{return this.g?this.g.responseText:""}catch(a){return ""}};k$1.Qa=function(a){if(this.g){var b=this.g.responseText;a&&0==b.indexOf(a)&&(b=b.substring(a.length));return vd(b)}};function oc(a){try{if(!a.g)return null;if("response"in a.g)return a.g.response;switch(a.J){case wd:case "text":return a.g.responseText;case "arraybuffer":if("mozResponseArrayBuffer"in a.g)return a.g.mozResponseArrayBuffer}return null}catch(b){return null}}k$1.Da=function(){return this.m};
-    k$1.La=function(){return "string"===typeof this.j?this.j:String(this.j)};function Fd(a){let b="";xa(a,function(c,d){b+=d;b+=":";b+=c;b+="\r\n";});return b}function Gd(a,b,c){a:{for(d in c){var d=!1;break a}d=!0;}d||(c=Fd(c),"string"===typeof a?(null!=c&&encodeURIComponent(String(c))):R(a,b,c));}function Hd(a,b,c){return c&&c.internalChannelParams?c.internalChannelParams[a]||b:b}
+    k$1.La=function(){return "string"===typeof this.j?this.j:String(this.j)};function Fd(a){let b="";xa$1(a,function(c,d){b+=d;b+=":";b+=c;b+="\r\n";});return b}function Gd(a,b,c){a:{for(d in c){var d=!1;break a}d=!0;}d||(c=Fd(c),"string"===typeof a?(null!=c&&encodeURIComponent(String(c))):R(a,b,c));}function Hd(a,b,c){return c&&c.internalChannelParams?c.internalChannelParams[a]||b:b}
     function Id(a){this.za=0;this.l=[];this.h=new Mb;this.la=this.oa=this.F=this.W=this.g=this.sa=this.D=this.aa=this.o=this.P=this.s=null;this.Za=this.V=0;this.Xa=Hd("failFast",!1,a);this.N=this.v=this.u=this.m=this.j=null;this.X=!0;this.I=this.ta=this.U=-1;this.Y=this.A=this.C=0;this.Pa=Hd("baseRetryDelayMs",5E3,a);this.$a=Hd("retryDelaySeedMs",1E4,a);this.Ya=Hd("forwardChannelMaxRetries",2,a);this.ra=Hd("forwardChannelRequestTimeoutMs",2E4,a);this.qa=a&&a.xmlHttpFactory||void 0;this.Ba=a&&a.Yb||!1;
     this.K=void 0;this.H=a&&a.supportsCrossDomainXhr||!1;this.J="";this.i=new gd(a&&a.concurrentRequestLimit);this.Ca=new ld;this.ja=a&&a.fastHandshake||!1;this.Ra=a&&a.Wb||!1;a&&a.Aa&&this.h.Aa();a&&a.forceLongPolling&&(this.X=!1);this.$=!this.ja&&this.X&&a&&a.detectBufferingProxy||!1;this.ka=void 0;this.O=0;this.L=!1;this.B=null;this.Wa=!a||!1!==a.Xb;}k$1=Id.prototype;k$1.ma=8;k$1.G=1;
     function Ic$1(a){Jd(a);if(3==a.G){var b=a.V++,c=N$1(a.F);R(c,"SID",a.J);R(c,"RID",b);R(c,"TYPE","terminate");Kd(a,c);b=new M$1(a,a.h,b,void 0);b.K=2;b.v=jc(N$1(c));c=!1;l.navigator&&l.navigator.sendBeacon&&(c=l.navigator.sendBeacon(b.v.toString(),""));!c&&l.Image&&((new Image).src=b.v,c=!0);c||(b.g=nc(b.l,null),b.g.ea(b.v));b.F=Date.now();lc(b);}Ld(a);}k$1.hb=function(a){try{this.h.info("Origin Trials invoked: "+a);}catch(b){}};function Ac$1(a){a.g&&(wc$1(a),a.g.cancel(),a.g=null);}
     function Jd(a){Ac$1(a);a.u&&(l.clearTimeout(a.u),a.u=null);zc(a);a.i.cancel();a.m&&("number"===typeof a.m&&l.clearTimeout(a.m),a.m=null);}function Md(a,b){a.l.push(new fd(a.Za++,b));3==a.G&&Hc(a);}function Hc(a){id(a.i)||a.m||(a.m=!0,zb(a.Ha,a),a.C=0);}function Nd(a,b){if(Cc(a.i)>=a.i.j-(a.m?1:0))return !1;if(a.m)return a.l=b.D.concat(a.l),!0;if(1==a.G||2==a.G||a.C>=(a.Xa?0:a.Ya))return !1;a.m=K$1(q$1(a.Ha,a,b),Od(a,a.C));a.C++;return !0}
-    k$1.Ha=function(a){if(this.m)if(this.m=null,1==this.G){if(!a){this.V=Math.floor(1E5*Math.random());a=this.V++;const e=new M$1(this,this.h,a,void 0);let f=this.s;this.P&&(f?(f=ya(f),Aa$1(f,this.P)):f=this.P);null===this.o&&(e.H=f);if(this.ja)a:{var b=0;for(var c=0;c<this.l.length;c++){b:{var d=this.l[c];if("__data__"in d.g&&(d=d.g.__data__,"string"===typeof d)){d=d.length;break b}d=void 0;}if(void 0===d)break;b+=d;if(4096<b){b=c;break a}if(4096===b||c===this.l.length-1){b=c+1;break a}}b=1E3;}else b=1E3;b=
+    k$1.Ha=function(a){if(this.m)if(this.m=null,1==this.G){if(!a){this.V=Math.floor(1E5*Math.random());a=this.V++;const e=new M$1(this,this.h,a,void 0);let f=this.s;this.P&&(f?(f=ya$1(f),Aa$1(f,this.P)):f=this.P);null===this.o&&(e.H=f);if(this.ja)a:{var b=0;for(var c=0;c<this.l.length;c++){b:{var d=this.l[c];if("__data__"in d.g&&(d=d.g.__data__,"string"===typeof d)){d=d.length;break b}d=void 0;}if(void 0===d)break;b+=d;if(4096<b){b=c;break a}if(4096===b||c===this.l.length-1){b=c+1;break a}}b=1E3;}else b=1E3;b=
     Pd(this,e,b);c=N$1(this.F);R(c,"RID",a);R(c,"CVER",22);this.D&&R(c,"X-HTTP-Session-Id",this.D);Kd(this,c);this.o&&f&&Gd(c,this.o,f);Dc$1(this.i,e);this.Ra&&R(c,"TYPE","init");this.ja?(R(c,"$req",b),R(c,"SID","null"),e.$=!0,ic(e,c,null)):ic(e,c,b);this.G=2;}}else 3==this.G&&(a?Qd(this,a):0==this.l.length||id(this.i)||Qd(this));};
     function Qd(a,b){var c;b?c=b.m:c=a.V++;const d=N$1(a.F);R(d,"SID",a.J);R(d,"RID",c);R(d,"AID",a.U);Kd(a,d);a.o&&a.s&&Gd(d,a.o,a.s);c=new M$1(a,a.h,c,a.C+1);null===a.o&&(c.H=a.s);b&&(a.l=b.D.concat(a.l));b=Pd(a,c,1E3);c.setTimeout(Math.round(.5*a.ra)+Math.round(.5*a.ra*Math.random()));Dc$1(a.i,c);ic(c,d,b);}function Kd(a,b){a.j&&Kc({},function(c,d){R(b,d,c);});}
     function Pd(a,b,c){c=Math.min(a.l.length,c);var d=a.j?q$1(a.j.Oa,a.j,a):null;a:{var e=a.l;let f=-1;for(;;){const h=["count="+c];-1==f?0<c?(f=e[0].h,h.push("ofs="+f)):f=0:h.push("ofs="+f);let n=!0;for(let u=0;u<c;u++){let m=e[u].h;const r=e[u].g;m-=f;if(0>m)f=Math.max(0,e[u].h-100),n=!1;else try{md(r,h,"req"+m+"_");}catch(G){d&&d(r);}}if(n){d=h.join("&");break a}}}a=a.l.splice(0,c);b.D=a;return d}function Gc(a){a.g||a.u||(a.Y=1,zb(a.Ga,a),a.A=0);}
@@ -4496,10 +4511,10 @@ var app = (function () {
     function wc$1(a){null!=a.B&&(l.clearTimeout(a.B),a.B=null);}function Rd(a){a.g=new M$1(a,a.h,"rpc",a.Y);null===a.o&&(a.g.H=a.s);a.g.O=0;var b=N$1(a.oa);R(b,"RID","rpc");R(b,"SID",a.J);R(b,"CI",a.N?"0":"1");R(b,"AID",a.U);Kd(a,b);R(b,"TYPE","xmlhttp");a.o&&a.s&&Gd(b,a.o,a.s);a.K&&a.g.setTimeout(a.K);var c=a.g;a=a.la;c.K=1;c.v=jc(N$1(b));c.s=null;c.U=!0;kc$1(c,a);}k$1.ab=function(){null!=this.v&&(this.v=null,Ac$1(this),Bc$1(this),J$1(19));};function zc(a){null!=a.v&&(l.clearTimeout(a.v),a.v=null);}
     function uc(a,b){var c=null;if(a.g==b){zc(a);wc$1(a);a.g=null;var d=2;}else if(yc$1(a.i,b))c=b.D,Fc(a.i,b),d=1;else return;a.I=b.N;if(0!=a.G)if(b.i)if(1==d){c=b.s?b.s.length:0;b=Date.now()-b.F;var e=a.C;d=Sb();D$1(d,new Vb(d,c,b,e));Hc(a);}else Gc(a);else if(e=b.o,3==e||0==e&&0<a.I||!(1==d&&Nd(a,b)||2==d&&Bc$1(a)))switch(c&&0<c.length&&(b=a.i,b.i=b.i.concat(c)),e){case 1:Q$1(a,5);break;case 4:Q$1(a,10);break;case 3:Q$1(a,6);break;default:Q$1(a,2);}}
     function Od(a,b){let c=a.Pa+Math.floor(Math.random()*a.$a);a.j||(c*=2);return c*b}function Q$1(a,b){a.h.info("Error code "+b);if(2==b){var c=null;a.j&&(c=null);var d=q$1(a.jb,a);c||(c=new U("//www.google.com/images/cleardot.gif"),l.location&&"http"==l.location.protocol||Oc$1(c,"https"),jc(c));nd(c.toString(),d);}else J$1(2);a.G=0;a.j&&a.j.va(b);Ld(a);Jd(a);}k$1.jb=function(a){a?(this.h.info("Successfully pinged google.com"),J$1(2)):(this.h.info("Failed to ping google.com"),J$1(1));};
-    function Ld(a){a.G=0;a.I=-1;if(a.j){if(0!=jd(a.i).length||0!=a.l.length)a.i.i.length=0,ra(a.l),a.l.length=0;a.j.ua();}}function Ec(a,b,c){let d=ad(c);if(""!=d.i)b&&Pc$1(d,b+"."+d.i),Qc(d,d.m);else {const e=l.location;d=bd(e.protocol,b?b+"."+e.hostname:e.hostname,+e.port,c);}a.aa&&xa(a.aa,function(e,f){R(d,f,e);});b=a.D;c=a.sa;b&&c&&R(d,b,c);R(d,"VER",a.ma);Kd(a,d);return d}
+    function Ld(a){a.G=0;a.I=-1;if(a.j){if(0!=jd(a.i).length||0!=a.l.length)a.i.i.length=0,ra$1(a.l),a.l.length=0;a.j.ua();}}function Ec(a,b,c){let d=ad(c);if(""!=d.i)b&&Pc$1(d,b+"."+d.i),Qc(d,d.m);else {const e=l.location;d=bd(e.protocol,b?b+"."+e.hostname:e.hostname,+e.port,c);}a.aa&&xa$1(a.aa,function(e,f){R(d,f,e);});b=a.D;c=a.sa;b&&c&&R(d,b,c);R(d,"VER",a.ma);Kd(a,d);return d}
     function nc(a,b,c){if(b&&!a.H)throw Error("Can't create secondary domain capable XhrIo object.");b=c&&a.Ba&&!a.qa?new X$1(new pd({ib:!0})):new X$1(a.qa);b.L=a.H;return b}function Sd(){}k$1=Sd.prototype;k$1.xa=function(){};k$1.wa=function(){};k$1.va=function(){};k$1.ua=function(){};k$1.Oa=function(){};function Td(){if(y&&!(10<=Number(Ua)))throw Error("Environmental error: no available transport.");}Td.prototype.g=function(a,b){return new Y$1(a,b)};
     function Y$1(a,b){C$1.call(this);this.g=new Id(b);this.l=a;this.h=b&&b.messageUrlParams||null;a=b&&b.messageHeaders||null;b&&b.clientProtocolHeaderRequired&&(a?a["X-Client-Protocol"]="webchannel":a={"X-Client-Protocol":"webchannel"});this.g.s=a;a=b&&b.initMessageHeaders||null;b&&b.messageContentType&&(a?a["X-WebChannel-Content-Type"]=b.messageContentType:a={"X-WebChannel-Content-Type":b.messageContentType});b&&b.ya&&(a?a["X-WebChannel-Client-Profile"]=b.ya:a={"X-WebChannel-Client-Profile":b.ya});this.g.P=
-    a;(a=b&&b.httpHeadersOverwriteParam)&&!sa(a)&&(this.g.o=a);this.A=b&&b.supportsCrossDomainXhr||!1;this.v=b&&b.sendRawJson||!1;(b=b&&b.httpSessionIdParam)&&!sa(b)&&(this.g.D=b,a=this.h,null!==a&&b in a&&(a=this.h,b in a&&delete a[b]));this.j=new Z$1(this);}t(Y$1,C$1);Y$1.prototype.m=function(){this.g.j=this.j;this.A&&(this.g.H=!0);var a=this.g,b=this.l,c=this.h||void 0;a.Wa&&(a.h.info("Origin Trials enabled."),zb(q$1(a.hb,a,b)));J$1(0);a.W=b;a.aa=c||{};a.N=a.X;a.F=Ec(a,null,a.W);Hc(a);};Y$1.prototype.close=function(){Ic$1(this.g);};
+    a;(a=b&&b.httpHeadersOverwriteParam)&&!sa$1(a)&&(this.g.o=a);this.A=b&&b.supportsCrossDomainXhr||!1;this.v=b&&b.sendRawJson||!1;(b=b&&b.httpSessionIdParam)&&!sa$1(b)&&(this.g.D=b,a=this.h,null!==a&&b in a&&(a=this.h,b in a&&delete a[b]));this.j=new Z$1(this);}t(Y$1,C$1);Y$1.prototype.m=function(){this.g.j=this.j;this.A&&(this.g.H=!0);var a=this.g,b=this.l,c=this.h||void 0;a.Wa&&(a.h.info("Origin Trials enabled."),zb(q$1(a.hb,a,b)));J$1(0);a.W=b;a.aa=c||{};a.N=a.X;a.F=Ec(a,null,a.W);Hc(a);};Y$1.prototype.close=function(){Ic$1(this.g);};
     Y$1.prototype.u=function(a){if("string"===typeof a){var b={};b.__data__=a;Md(this.g,b);}else this.v?(b={},b.__data__=rb(a),Md(this.g,b)):Md(this.g,a);};Y$1.prototype.M=function(){this.g.j=null;delete this.j;Ic$1(this.g);delete this.g;Y$1.Z.M.call(this);};function Ud(a){ac.call(this);var b=a.__sm__;if(b){a:{for(const c in b){a=c;break a}a=void 0;}if(this.i=a)a=this.i,b=null!==b&&a in b?b[a]:void 0;this.data=b;}else this.data=a;}t(Ud,ac);function Vd(){bc$1.call(this);this.status=1;}t(Vd,bc$1);function Z$1(a){this.g=a;}
     t(Z$1,Sd);Z$1.prototype.xa=function(){D$1(this.g,"a");};Z$1.prototype.wa=function(a){D$1(this.g,new Ud(a));};Z$1.prototype.va=function(a){D$1(this.g,new Vd(a));};Z$1.prototype.ua=function(){D$1(this.g,"b");};/*
 
@@ -5812,6 +5827,20 @@ var app = (function () {
     }
 
     /**
+     * Creates a new ServerTimestamp proto value (using the internal format).
+     */
+    /**
+     * Returns the value of the field before this ServerTimestamp was set.
+     *
+     * Preserving the previous values allows the user to display the last resoled
+     * value until the backend responds with the timestamp.
+     */
+    function Rt(t) {
+        const e = t.mapValue.fields.__previous_value__;
+        return At(e) ? Rt(e) : e;
+    }
+
+    /**
      * Returns the local time at which this timestamp was first set.
      */ function Pt(t) {
         const e = Tt(t.mapValue.fields.__local_write_time__.timestampValue);
@@ -6114,6 +6143,12 @@ var app = (function () {
         var e, n;
     }
 
+    function Ot(t, e) {
+        return {
+            referenceValue: `projects/${t.projectId}/databases/${t.database}/documents/${e.path.canonicalString()}`
+        };
+    }
+
     /** Returns true if `value` is an IntegerValue . */ function Mt(t) {
         return !!t && "integerValue" in t;
     }
@@ -6122,6 +6157,14 @@ var app = (function () {
     /** Returns true if `value` is an ArrayValue. */
     function Lt(t) {
         return !!t && "arrayValue" in t;
+    }
+
+    /** Returns true if `value` is a NullValue. */ function Bt(t) {
+        return !!t && "nullValue" in t;
+    }
+
+    /** Returns true if `value` is NaN. */ function Ut(t) {
+        return !!t && "doubleValue" in t && isNaN(Number(t.doubleValue));
     }
 
     /** Returns true if `value` is a MapValue. */ function qt(t) {
@@ -6472,6 +6515,10 @@ var app = (function () {
         n.op !== s.op || !n.field.isEqual(s.field) || !Ct(n.value, s.value)) return !1;
         var n, s;
         return t.collectionGroup === e.collectionGroup && (!!t.path.isEqual(e.path) && (!!we(t.startAt, e.startAt) && we(t.endAt, e.endAt)));
+    }
+
+    function Xt(t) {
+        return St.isDocumentKey(t.path) && null === t.collectionGroup && 0 === t.filters.length;
     }
 
     class Zt extends class {} {
@@ -7386,6 +7433,28 @@ var app = (function () {
      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      * See the License for the specific language governing permissions and
      * limitations under the License.
+     */ class fn {
+        // TODO(b/33078163): just use simplest form of existence filter for now
+        constructor(t) {
+            this.count = t;
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
      */
     /**
      * Error Codes describing the different ways GRPC can fail. These are copied
@@ -8037,6 +8106,543 @@ var app = (function () {
     }
 
     /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * An event from the RemoteStore. It is split into targetChanges (changes to the
+     * state or the set of documents in our watched targets) and documentUpdates
+     * (changes to the actual documents).
+     */ class Nn {
+        constructor(
+        /**
+         * The snapshot version this event brings us up to, or MIN if not set.
+         */
+        t, 
+        /**
+         * A map from target to changes to the target. See TargetChange.
+         */
+        e, 
+        /**
+         * A set of targets that is known to be inconsistent. Listens for these
+         * targets should be re-established without resume tokens.
+         */
+        n, 
+        /**
+         * A set of which documents have changed or been deleted, along with the
+         * doc's new values (if not deleted).
+         */
+        s, 
+        /**
+         * A set of which document updates are due only to limbo resolution targets.
+         */
+        i) {
+            this.snapshotVersion = t, this.targetChanges = e, this.targetMismatches = n, this.documentUpdates = s, 
+            this.resolvedLimboDocuments = i;
+        }
+        /**
+         * HACK: Views require RemoteEvents in order to determine whether the view is
+         * CURRENT, but secondary tabs don't receive remote events. So this method is
+         * used to create a synthesized RemoteEvent that can be used to apply a
+         * CURRENT status change to a View, for queries executed in a different tab.
+         */
+        // PORTING NOTE: Multi-tab only
+        static createSynthesizedRemoteEventForCurrentChange(t, e) {
+            const n = new Map;
+            return n.set(t, kn.createSynthesizedTargetChangeForCurrentChange(t, e)), new Nn(ct.min(), n, Cn(), An(), Sn());
+        }
+    }
+
+    /**
+     * A TargetChange specifies the set of changes for a specific target as part of
+     * a RemoteEvent. These changes track which documents are added, modified or
+     * removed, as well as the target's resume token and whether the target is
+     * marked CURRENT.
+     * The actual changes *to* documents are not part of the TargetChange since
+     * documents may be part of multiple targets.
+     */ class kn {
+        constructor(
+        /**
+         * An opaque, server-assigned token that allows watching a query to be resumed
+         * after disconnecting without retransmitting all the data that matches the
+         * query. The resume token essentially identifies a point in time from which
+         * the server should resume sending results.
+         */
+        t, 
+        /**
+         * The "current" (synced) status of this target. Note that "current"
+         * has special meaning in the RPC protocol that implies that a target is
+         * both up-to-date and consistent with the rest of the watch stream.
+         */
+        e, 
+        /**
+         * The set of documents that were newly assigned to this target as part of
+         * this remote event.
+         */
+        n, 
+        /**
+         * The set of documents that were already assigned to this target but received
+         * an update during this remote event.
+         */
+        s, 
+        /**
+         * The set of documents that were removed from this target as part of this
+         * remote event.
+         */
+        i) {
+            this.resumeToken = t, this.current = e, this.addedDocuments = n, this.modifiedDocuments = s, 
+            this.removedDocuments = i;
+        }
+        /**
+         * This method is used to create a synthesized TargetChanges that can be used to
+         * apply a CURRENT status change to a View (for queries executed in a different
+         * tab) or for new queries (to raise snapshots with correct CURRENT status).
+         */    static createSynthesizedTargetChangeForCurrentChange(t, e) {
+            return new kn(yt.EMPTY_BYTE_STRING, e, Sn(), Sn(), Sn());
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * Represents a changed document and a list of target ids to which this change
+     * applies.
+     *
+     * If document has been deleted NoDocument will be provided.
+     */ class xn {
+        constructor(
+        /** The new document applies to all of these targets. */
+        t, 
+        /** The new document is removed from all of these targets. */
+        e, 
+        /** The key of the document for this change. */
+        n, 
+        /**
+         * The new document or NoDocument if it was deleted. Is null if the
+         * document went out of view without the server sending a new document.
+         */
+        s) {
+            this.$ = t, this.removedTargetIds = e, this.key = n, this.F = s;
+        }
+    }
+
+    class $n {
+        constructor(t, e) {
+            this.targetId = t, this.O = e;
+        }
+    }
+
+    class Fn {
+        constructor(
+        /** What kind of change occurred to the watch target. */
+        t, 
+        /** The target IDs that were added/removed/set. */
+        e, 
+        /**
+         * An opaque, server-assigned token that allows watching a target to be
+         * resumed after disconnecting without retransmitting all the data that
+         * matches the target. The resume token essentially identifies a point in
+         * time from which the server should resume sending results.
+         */
+        n = yt.EMPTY_BYTE_STRING
+        /** An RPC error indicating why the watch failed. */ , s = null) {
+            this.state = t, this.targetIds = e, this.resumeToken = n, this.cause = s;
+        }
+    }
+
+    /** Tracks the internal state of a Watch target. */ class On {
+        constructor() {
+            /**
+             * The number of pending responses (adds or removes) that we are waiting on.
+             * We only consider targets active that have no pending responses.
+             */
+            this.M = 0, 
+            /**
+             * Keeps track of the document changes since the last raised snapshot.
+             *
+             * These changes are continuously updated as we receive document updates and
+             * always reflect the current set of changes against the last issued snapshot.
+             */
+            this.L = Bn(), 
+            /** See public getters for explanations of these fields. */
+            this.B = yt.EMPTY_BYTE_STRING, this.U = !1, 
+            /**
+             * Whether this target state should be included in the next snapshot. We
+             * initialize to true so that newly-added targets are included in the next
+             * RemoteEvent.
+             */
+            this.q = !0;
+        }
+        /**
+         * Whether this target has been marked 'current'.
+         *
+         * 'Current' has special meaning in the RPC protocol: It implies that the
+         * Watch backend has sent us all changes up to the point at which the target
+         * was added and that the target is consistent with the rest of the watch
+         * stream.
+         */    get current() {
+            return this.U;
+        }
+        /** The last resume token sent to us for this target. */    get resumeToken() {
+            return this.B;
+        }
+        /** Whether this target has pending target adds or target removes. */    get K() {
+            return 0 !== this.M;
+        }
+        /** Whether we have modified any state that should trigger a snapshot. */    get j() {
+            return this.q;
+        }
+        /**
+         * Applies the resume token to the TargetChange, but only when it has a new
+         * value. Empty resumeTokens are discarded.
+         */    W(t) {
+            t.approximateByteSize() > 0 && (this.q = !0, this.B = t);
+        }
+        /**
+         * Creates a target change from the current set of changes.
+         *
+         * To reset the document changes after raising this snapshot, call
+         * `clearPendingChanges()`.
+         */    G() {
+            let t = Sn(), e = Sn(), n = Sn();
+            return this.L.forEach(((s, i) => {
+                switch (i) {
+                  case 0 /* Added */ :
+                    t = t.add(s);
+                    break;
+
+                  case 2 /* Modified */ :
+                    e = e.add(s);
+                    break;
+
+                  case 1 /* Removed */ :
+                    n = n.add(s);
+                    break;
+
+                  default:
+                    L();
+                }
+            })), new kn(this.B, this.U, t, e, n);
+        }
+        /**
+         * Resets the document changes and sets `hasPendingChanges` to false.
+         */    H() {
+            this.q = !1, this.L = Bn();
+        }
+        J(t, e) {
+            this.q = !0, this.L = this.L.insert(t, e);
+        }
+        Y(t) {
+            this.q = !0, this.L = this.L.remove(t);
+        }
+        X() {
+            this.M += 1;
+        }
+        Z() {
+            this.M -= 1;
+        }
+        tt() {
+            this.q = !0, this.U = !0;
+        }
+    }
+
+    /**
+     * A helper class to accumulate watch changes into a RemoteEvent.
+     */
+    class Mn {
+        constructor(t) {
+            this.et = t, 
+            /** The internal state of all tracked targets. */
+            this.nt = new Map, 
+            /** Keeps track of the documents to update since the last raised snapshot. */
+            this.st = An(), 
+            /** A mapping of document keys to their set of target IDs. */
+            this.it = Ln(), 
+            /**
+             * A list of targets with existence filter mismatches. These targets are
+             * known to be inconsistent and their listens needs to be re-established by
+             * RemoteStore.
+             */
+            this.rt = new Tn(it);
+        }
+        /**
+         * Processes and adds the DocumentWatchChange to the current set of changes.
+         */    ot(t) {
+            for (const e of t.$) t.F && t.F.isFoundDocument() ? this.at(e, t.F) : this.ct(e, t.key, t.F);
+            for (const e of t.removedTargetIds) this.ct(e, t.key, t.F);
+        }
+        /** Processes and adds the WatchTargetChange to the current set of changes. */    ut(t) {
+            this.forEachTarget(t, (e => {
+                const n = this.ht(e);
+                switch (t.state) {
+                  case 0 /* NoChange */ :
+                    this.lt(e) && n.W(t.resumeToken);
+                    break;
+
+                  case 1 /* Added */ :
+                    // We need to decrement the number of pending acks needed from watch
+                    // for this targetId.
+                    n.Z(), n.K || 
+                    // We have a freshly added target, so we need to reset any state
+                    // that we had previously. This can happen e.g. when remove and add
+                    // back a target for existence filter mismatches.
+                    n.H(), n.W(t.resumeToken);
+                    break;
+
+                  case 2 /* Removed */ :
+                    // We need to keep track of removed targets to we can post-filter and
+                    // remove any target changes.
+                    // We need to decrement the number of pending acks needed from watch
+                    // for this targetId.
+                    n.Z(), n.K || this.removeTarget(e);
+                    break;
+
+                  case 3 /* Current */ :
+                    this.lt(e) && (n.tt(), n.W(t.resumeToken));
+                    break;
+
+                  case 4 /* Reset */ :
+                    this.lt(e) && (
+                    // Reset the target and synthesizes removes for all existing
+                    // documents. The backend will re-add any documents that still
+                    // match the target before it sends the next global snapshot.
+                    this.ft(e), n.W(t.resumeToken));
+                    break;
+
+                  default:
+                    L();
+                }
+            }));
+        }
+        /**
+         * Iterates over all targetIds that the watch change applies to: either the
+         * targetIds explicitly listed in the change or the targetIds of all currently
+         * active targets.
+         */    forEachTarget(t, e) {
+            t.targetIds.length > 0 ? t.targetIds.forEach(e) : this.nt.forEach(((t, n) => {
+                this.lt(n) && e(n);
+            }));
+        }
+        /**
+         * Handles existence filters and synthesizes deletes for filter mismatches.
+         * Targets that are invalidated by filter mismatches are added to
+         * `pendingTargetResets`.
+         */    dt(t) {
+            const e = t.targetId, n = t.O.count, s = this.wt(e);
+            if (s) {
+                const t = s.target;
+                if (Xt(t)) if (0 === n) {
+                    // The existence filter told us the document does not exist. We deduce
+                    // that this document does not exist and apply a deleted document to
+                    // our updates. Without applying this deleted document there might be
+                    // another query that will raise this document as part of a snapshot
+                    // until it is resolved, essentially exposing inconsistency between
+                    // queries.
+                    const n = new St(t.path);
+                    this.ct(e, n, Wt.newNoDocument(n, ct.min()));
+                } else B(1 === n); else {
+                    this._t(e) !== n && (
+                    // Existence filter mismatch: We reset the mapping and raise a new
+                    // snapshot with `isFromCache:true`.
+                    this.ft(e), this.rt = this.rt.add(e));
+                }
+            }
+        }
+        /**
+         * Converts the currently accumulated state into a remote event at the
+         * provided snapshot version. Resets the accumulated changes before returning.
+         */    gt(t) {
+            const e = new Map;
+            this.nt.forEach(((n, s) => {
+                const i = this.wt(s);
+                if (i) {
+                    if (n.current && Xt(i.target)) {
+                        // Document queries for document that don't exist can produce an empty
+                        // result set. To update our local cache, we synthesize a document
+                        // delete if we have not previously received the document. This
+                        // resolves the limbo state of the document, removing it from
+                        // limboDocumentRefs.
+                        // TODO(dimond): Ideally we would have an explicit lookup target
+                        // instead resulting in an explicit delete message and we could
+                        // remove this special logic.
+                        const e = new St(i.target.path);
+                        null !== this.st.get(e) || this.yt(s, e) || this.ct(s, e, Wt.newNoDocument(e, t));
+                    }
+                    n.j && (e.set(s, n.G()), n.H());
+                }
+            }));
+            let n = Sn();
+            // We extract the set of limbo-only document updates as the GC logic
+            // special-cases documents that do not appear in the target cache.
+            
+            // TODO(gsoltis): Expand on this comment once GC is available in the JS
+            // client.
+                    this.it.forEach(((t, e) => {
+                let s = !0;
+                e.forEachWhile((t => {
+                    const e = this.wt(t);
+                    return !e || 2 /* LimboResolution */ === e.purpose || (s = !1, !1);
+                })), s && (n = n.add(t));
+            }));
+            const s = new Nn(t, e, this.rt, this.st, n);
+            return this.st = An(), this.it = Ln(), this.rt = new Tn(it), s;
+        }
+        /**
+         * Adds the provided document to the internal list of document updates and
+         * its document key to the given target's mapping.
+         */
+        // Visible for testing.
+        at(t, e) {
+            if (!this.lt(t)) return;
+            const n = this.yt(t, e.key) ? 2 /* Modified */ : 0 /* Added */;
+            this.ht(t).J(e.key, n), this.st = this.st.insert(e.key, e), this.it = this.it.insert(e.key, this.Tt(e.key).add(t));
+        }
+        /**
+         * Removes the provided document from the target mapping. If the
+         * document no longer matches the target, but the document's state is still
+         * known (e.g. we know that the document was deleted or we received the change
+         * that caused the filter mismatch), the new document can be provided
+         * to update the remote document cache.
+         */
+        // Visible for testing.
+        ct(t, e, n) {
+            if (!this.lt(t)) return;
+            const s = this.ht(t);
+            this.yt(t, e) ? s.J(e, 1 /* Removed */) : 
+            // The document may have entered and left the target before we raised a
+            // snapshot, so we can just ignore the change.
+            s.Y(e), this.it = this.it.insert(e, this.Tt(e).delete(t)), n && (this.st = this.st.insert(e, n));
+        }
+        removeTarget(t) {
+            this.nt.delete(t);
+        }
+        /**
+         * Returns the current count of documents in the target. This includes both
+         * the number of documents that the LocalStore considers to be part of the
+         * target as well as any accumulated changes.
+         */    _t(t) {
+            const e = this.ht(t).G();
+            return this.et.getRemoteKeysForTarget(t).size + e.addedDocuments.size - e.removedDocuments.size;
+        }
+        /**
+         * Increment the number of acks needed from watch before we can consider the
+         * server to be 'in-sync' with the client's active targets.
+         */    X(t) {
+            this.ht(t).X();
+        }
+        ht(t) {
+            let e = this.nt.get(t);
+            return e || (e = new On, this.nt.set(t, e)), e;
+        }
+        Tt(t) {
+            let e = this.it.get(t);
+            return e || (e = new Tn(it), this.it = this.it.insert(t, e)), e;
+        }
+        /**
+         * Verifies that the user is still interested in this target (by calling
+         * `getTargetDataForTarget()`) and that we are not waiting for pending ADDs
+         * from watch.
+         */    lt(t) {
+            const e = null !== this.wt(t);
+            return e || $("WatchChangeAggregator", "Detected inactive target", t), e;
+        }
+        /**
+         * Returns the TargetData for an active target (i.e. a target that the user
+         * is still interested in that has no outstanding target change requests).
+         */    wt(t) {
+            const e = this.nt.get(t);
+            return e && e.K ? null : this.et.Et(t);
+        }
+        /**
+         * Resets the state of a Watch target to its initial state (e.g. sets
+         * 'current' to false, clears the resume token and removes its target mapping
+         * from all documents).
+         */    ft(t) {
+            this.nt.set(t, new On);
+            this.et.getRemoteKeysForTarget(t).forEach((e => {
+                this.ct(t, e, /*updatedDocument=*/ null);
+            }));
+        }
+        /**
+         * Returns whether the LocalStore considers the document to be part of the
+         * specified target.
+         */    yt(t, e) {
+            return this.et.getRemoteKeysForTarget(t).has(e);
+        }
+    }
+
+    function Ln() {
+        return new gn(St.comparator);
+    }
+
+    function Bn() {
+        return new gn(St.comparator);
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */ const Un = (() => {
+        const t = {
+            asc: "ASCENDING",
+            desc: "DESCENDING"
+        };
+        return t;
+    })(), qn = (() => {
+        const t = {
+            "<": "LESS_THAN",
+            "<=": "LESS_THAN_OR_EQUAL",
+            ">": "GREATER_THAN",
+            ">=": "GREATER_THAN_OR_EQUAL",
+            "==": "EQUAL",
+            "!=": "NOT_EQUAL",
+            "array-contains": "ARRAY_CONTAINS",
+            in: "IN",
+            "not-in": "NOT_IN",
+            "array-contains-any": "ARRAY_CONTAINS_ANY"
+        };
+        return t;
+    })();
+
+    /**
      * This class generates JsonObject values for the Datastore API suitable for
      * sending to either GRPC stub methods or via the JSON/HTTP REST API.
      *
@@ -8106,6 +8712,17 @@ var app = (function () {
         return zn(t.databaseId, e.path);
     }
 
+    function Yn(t, e) {
+        const n = Hn(e);
+        if (n.get(1) !== t.databaseId.projectId) throw new j(K.INVALID_ARGUMENT, "Tried to deserialize key from different project: " + n.get(1) + " vs " + t.databaseId.projectId);
+        if (n.get(3) !== t.databaseId.database) throw new j(K.INVALID_ARGUMENT, "Tried to deserialize key from different database: " + n.get(3) + " vs " + t.databaseId.database);
+        return new St(es(n));
+    }
+
+    function Xn(t, e) {
+        return zn(t.databaseId, e);
+    }
+
     function Zn(t) {
         const e = Hn(t);
         // In v1beta1 queries for collections at the root did not have a trailing
@@ -8128,6 +8745,65 @@ var app = (function () {
             name: Jn(t, e),
             fields: n.value.mapValue.fields
         };
+    }
+
+    function rs(t, e) {
+        let n;
+        if ("targetChange" in e) {
+            e.targetChange;
+            // proto3 default value is unset in JSON (undefined), so use 'NO_CHANGE'
+            // if unset
+            const s = function(t) {
+                return "NO_CHANGE" === t ? 0 /* NoChange */ : "ADD" === t ? 1 /* Added */ : "REMOVE" === t ? 2 /* Removed */ : "CURRENT" === t ? 3 /* Current */ : "RESET" === t ? 4 /* Reset */ : L();
+            }(e.targetChange.targetChangeType || "NO_CHANGE"), i = e.targetChange.targetIds || [], r = function(t, e) {
+                return t.C ? (B(void 0 === e || "string" == typeof e), yt.fromBase64String(e || "")) : (B(void 0 === e || e instanceof Uint8Array), 
+                yt.fromUint8Array(e || new Uint8Array));
+            }(t, e.targetChange.resumeToken), o = e.targetChange.cause, a = o && function(t) {
+                const e = void 0 === t.code ? K.UNKNOWN : mn(t.code);
+                return new j(e, t.message || "");
+            }
+            /**
+     * Returns a value for a number (or null) that's appropriate to put into
+     * a google.protobuf.Int32Value proto.
+     * DO NOT USE THIS FOR ANYTHING ELSE.
+     * This method cheats. It's typed as returning "number" because that's what
+     * our generated proto interfaces say Int32Value must be. But GRPC actually
+     * expects a { value: <number> } struct.
+     */ (o);
+            n = new Fn(s, i, r, a || null);
+        } else if ("documentChange" in e) {
+            e.documentChange;
+            const s = e.documentChange;
+            s.document, s.document.name, s.document.updateTime;
+            const i = Yn(t, s.document.name), r = Gn(s.document.updateTime), o = new jt({
+                mapValue: {
+                    fields: s.document.fields
+                }
+            }), a = Wt.newFoundDocument(i, r, o), c = s.targetIds || [], u = s.removedTargetIds || [];
+            n = new xn(c, u, a.key, a);
+        } else if ("documentDelete" in e) {
+            e.documentDelete;
+            const s = e.documentDelete;
+            s.document;
+            const i = Yn(t, s.document), r = s.readTime ? Gn(s.readTime) : ct.min(), o = Wt.newNoDocument(i, r), a = s.removedTargetIds || [];
+            n = new xn([], a, o.key, o);
+        } else if ("documentRemove" in e) {
+            e.documentRemove;
+            const s = e.documentRemove;
+            s.document;
+            const i = Yn(t, s.document), r = s.removedTargetIds || [];
+            n = new xn([], r, i, null);
+        } else {
+            if (!("filter" in e)) return L();
+            {
+                e.filter;
+                const t = e.filter;
+                t.targetId;
+                const s = t.count || 0, i = new fn(s), r = t.targetId;
+                n = new $n(r, i);
+            }
+        }
+        return n;
     }
 
     function os(t, e) {
@@ -8191,6 +8867,96 @@ var app = (function () {
         }(t, e)))) : [];
     }
 
+    function us(t, e) {
+        return {
+            documents: [ Xn(t, e.path) ]
+        };
+    }
+
+    function hs(t, e) {
+        // Dissect the path into parent, collectionId, and optional key filter.
+        const n = {
+            structuredQuery: {}
+        }, s = e.path;
+        null !== e.collectionGroup ? (n.parent = Xn(t, s), n.structuredQuery.from = [ {
+            collectionId: e.collectionGroup,
+            allDescendants: !0
+        } ]) : (n.parent = Xn(t, s.popLast()), n.structuredQuery.from = [ {
+            collectionId: s.lastSegment()
+        } ]);
+        const i = function(t) {
+            if (0 === t.length) return;
+            const e = t.map((t => 
+            // visible for testing
+            function(t) {
+                if ("==" /* EQUAL */ === t.op) {
+                    if (Ut(t.value)) return {
+                        unaryFilter: {
+                            field: ys(t.field),
+                            op: "IS_NAN"
+                        }
+                    };
+                    if (Bt(t.value)) return {
+                        unaryFilter: {
+                            field: ys(t.field),
+                            op: "IS_NULL"
+                        }
+                    };
+                } else if ("!=" /* NOT_EQUAL */ === t.op) {
+                    if (Ut(t.value)) return {
+                        unaryFilter: {
+                            field: ys(t.field),
+                            op: "IS_NOT_NAN"
+                        }
+                    };
+                    if (Bt(t.value)) return {
+                        unaryFilter: {
+                            field: ys(t.field),
+                            op: "IS_NOT_NULL"
+                        }
+                    };
+                }
+                return {
+                    fieldFilter: {
+                        field: ys(t.field),
+                        op: gs(t.op),
+                        value: t.value
+                    }
+                };
+            }(t)));
+            if (1 === e.length) return e[0];
+            return {
+                compositeFilter: {
+                    op: "AND",
+                    filters: e
+                }
+            };
+        }(e.filters);
+        i && (n.structuredQuery.where = i);
+        const r = function(t) {
+            if (0 === t.length) return;
+            return t.map((t => 
+            // visible for testing
+            function(t) {
+                return {
+                    field: ys(t.field),
+                    direction: ms(t.dir)
+                };
+            }(t)));
+        }(e.orderBy);
+        r && (n.structuredQuery.orderBy = r);
+        const o = function(t, e) {
+            return t.C || bt(e) ? e : {
+                value: e
+            };
+        }
+        /**
+     * Returns a number (or null) from a google.protobuf.Int32Value proto.
+     */ (t, e.limit);
+        return null !== o && (n.structuredQuery.limit = o), e.startAt && (n.structuredQuery.startAt = ws(e.startAt)), 
+        e.endAt && (n.structuredQuery.endAt = ws(e.endAt)), n;
+    }
+
     function ls(t) {
         let e = Zn(t.parent);
         const n = t.structuredQuery, s = n.from ? n.from.length : 0;
@@ -8232,13 +8998,56 @@ var app = (function () {
         return n.endAt && (u = _s(n.endAt)), me(e, i, o, r, a, "F" /* First */ , c, u);
     }
 
+    function fs(t, e) {
+        const n = function(t, e) {
+            switch (e) {
+              case 0 /* Listen */ :
+                return null;
+
+              case 1 /* ExistenceFilterMismatch */ :
+                return "existence-filter-mismatch";
+
+              case 2 /* LimboResolution */ :
+                return "limbo-document";
+
+              default:
+                return L();
+            }
+        }(0, e.purpose);
+        return null == n ? null : {
+            "goog-listen-tags": n
+        };
+    }
+
     function ds(t) {
         return t ? void 0 !== t.unaryFilter ? [ Es(t) ] : void 0 !== t.fieldFilter ? [ Ts(t) ] : void 0 !== t.compositeFilter ? t.compositeFilter.filters.map((t => ds(t))).reduce(((t, e) => t.concat(e))) : L() : [];
+    }
+
+    function ws(t) {
+        return {
+            before: t.before,
+            values: t.position
+        };
     }
 
     function _s(t) {
         const e = !!t.before, n = t.values || [];
         return new ue(n, e);
+    }
+
+    // visible for testing
+    function ms(t) {
+        return Un[t];
+    }
+
+    function gs(t) {
+        return qn[t];
+    }
+
+    function ys(t) {
+        return {
+            fieldPath: t.canonicalString()
+        };
     }
 
     function ps(t) {
@@ -8578,6 +9387,72 @@ var app = (function () {
             const i = t.mutations;
             for (let t = 0; t < i.length; t++) s = s.insert(i[t].key, n[t].version);
             return new oi(t, e, n, s);
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * An immutable set of metadata that the local store tracks for each target.
+     */ class ai {
+        constructor(
+        /** The target being listened to. */
+        t, 
+        /**
+         * The target ID to which the target corresponds; Assigned by the
+         * LocalStore for user listens and by the SyncEngine for limbo watches.
+         */
+        e, 
+        /** The purpose of the target. */
+        n, 
+        /**
+         * The sequence number of the last transaction during which this target data
+         * was modified.
+         */
+        s, 
+        /** The latest snapshot version seen for this target. */
+        i = ct.min()
+        /**
+         * The maximum snapshot version at which the associated view
+         * contained no limbo documents.
+         */ , r = ct.min()
+        /**
+         * An opaque, server-assigned token that allows watching a target to be
+         * resumed after disconnecting without retransmitting all the data that
+         * matches the target. The resume token essentially identifies a point in
+         * time from which the server should resume sending results.
+         */ , o = yt.EMPTY_BYTE_STRING) {
+            this.target = t, this.targetId = e, this.purpose = n, this.sequenceNumber = s, this.snapshotVersion = i, 
+            this.lastLimboFreeSnapshotVersion = r, this.resumeToken = o;
+        }
+        /** Creates a new target data instance with an updated sequence number. */    withSequenceNumber(t) {
+            return new ai(this.target, this.targetId, this.purpose, t, this.snapshotVersion, this.lastLimboFreeSnapshotVersion, this.resumeToken);
+        }
+        /**
+         * Creates a new target data instance with an updated resume token and
+         * snapshot version.
+         */    withResumeToken(t, e) {
+            return new ai(this.target, this.targetId, this.purpose, this.sequenceNumber, e, this.lastLimboFreeSnapshotVersion, t);
+        }
+        /**
+         * Creates a new target data instance with an updated last limbo free
+         * snapshot version number.
+         */    withLastLimboFreeSnapshotVersion(t) {
+            return new ai(this.target, this.targetId, this.purpose, this.sequenceNumber, this.snapshotVersion, t, this.resumeToken);
         }
     }
 
@@ -9341,6 +10216,127 @@ var app = (function () {
     }
 
     /**
+     * Updates the "ground-state" (remote) documents. We assume that the remote
+     * event reflects any write batches that have been acknowledged or rejected
+     * (i.e. we do not re-apply local mutations to updates from this event).
+     *
+     * LocalDocuments are re-calculated if there are remaining mutations in the
+     * queue.
+     */ function mr(t, e) {
+        const n = q(t), s = e.snapshotVersion;
+        let i = n.qn;
+        return n.persistence.runTransaction("Apply remote event", "readwrite-primary", (t => {
+            const r = n.Qn.newChangeBuffer({
+                trackRemovals: !0
+            });
+            // Reset newTargetDataByTargetMap in case this transaction gets re-run.
+                    i = n.qn;
+            const o = [];
+            e.targetChanges.forEach(((e, r) => {
+                const a = i.get(r);
+                if (!a) return;
+                // Only update the remote keys if the target is still active. This
+                // ensures that we can persist the updated target data along with
+                // the updated assignment.
+                            o.push(n.He.removeMatchingKeys(t, e.removedDocuments, r).next((() => n.He.addMatchingKeys(t, e.addedDocuments, r))));
+                const c = e.resumeToken;
+                // Update the resume token if the change includes one.
+                            if (c.approximateByteSize() > 0) {
+                    const u = a.withResumeToken(c, s).withSequenceNumber(t.currentSequenceNumber);
+                    i = i.insert(r, u), 
+                    // Update the target data if there are target changes (or if
+                    // sufficient time has passed since the last update).
+                    /**
+     * Returns true if the newTargetData should be persisted during an update of
+     * an active target. TargetData should always be persisted when a target is
+     * being released and should not call this function.
+     *
+     * While the target is active, TargetData updates can be omitted when nothing
+     * about the target has changed except metadata like the resume token or
+     * snapshot version. Occasionally it's worth the extra write to prevent these
+     * values from getting too stale after a crash, but this doesn't have to be
+     * too frequent.
+     */
+                    function(t, e, n) {
+                        // Always persist target data if we don't already have a resume token.
+                        if (B(e.resumeToken.approximateByteSize() > 0), 0 === t.resumeToken.approximateByteSize()) return !0;
+                        // Don't allow resume token changes to be buffered indefinitely. This
+                        // allows us to be reasonably up-to-date after a crash and avoids needing
+                        // to loop over all active queries on shutdown. Especially in the browser
+                        // we may not get time to do anything interesting while the current tab is
+                        // closing.
+                                            if (e.snapshotVersion.toMicroseconds() - t.snapshotVersion.toMicroseconds() >= 3e8) return !0;
+                        // Otherwise if the only thing that has changed about a target is its resume
+                        // token it's not worth persisting. Note that the RemoteStore keeps an
+                        // in-memory view of the currently active targets which includes the current
+                        // resume token, so stream failure or user changes will still use an
+                        // up-to-date resume token regardless of what we do here.
+                                            return n.addedDocuments.size + n.modifiedDocuments.size + n.removedDocuments.size > 0;
+                    }
+                    /**
+     * Notifies local store of the changed views to locally pin documents.
+     */ (a, u, e) && o.push(n.He.updateTargetData(t, u));
+                }
+            }));
+            let a = An();
+            // HACK: The only reason we allow a null snapshot version is so that we
+            // can synthesize remote events when we get permission denied errors while
+            // trying to resolve the state of a locally cached document that is in
+            // limbo.
+            if (e.documentUpdates.forEach(((s, i) => {
+                e.resolvedLimboDocuments.has(s) && o.push(n.persistence.referenceDelegate.updateLimboDocument(t, s));
+            })), 
+            // Each loop iteration only affects its "own" doc, so it's safe to get all the remote
+            // documents in advance in a single call.
+            o.push(gr(t, r, e.documentUpdates, s, void 0).next((t => {
+                a = t;
+            }))), !s.isEqual(ct.min())) {
+                const e = n.He.getLastRemoteSnapshotVersion(t).next((e => n.He.setTargetsMetadata(t, t.currentSequenceNumber, s)));
+                o.push(e);
+            }
+            return Gs.waitFor(o).next((() => r.apply(t))).next((() => n.Wn.Vn(t, a))).next((() => a));
+        })).then((t => (n.qn = i, t)));
+    }
+
+    /**
+     * Populates document change buffer with documents from backend or a bundle.
+     * Returns the document changes resulting from applying those documents.
+     *
+     * @param txn - Transaction to use to read existing documents from storage.
+     * @param documentBuffer - Document buffer to collect the resulted changes to be
+     *        applied to storage.
+     * @param documents - Documents to be applied.
+     * @param globalVersion - A `SnapshotVersion` representing the read time if all
+     *        documents have the same read time.
+     * @param documentVersions - A DocumentKey-to-SnapshotVersion map if documents
+     *        have their own read time.
+     *
+     * Note: this function will use `documentVersions` if it is defined;
+     * when it is not defined, resorts to `globalVersion`.
+     */ function gr(t, e, n, s, 
+    // TODO(wuandy): We could add `readTime` to MaybeDocument instead to remove
+    // this parameter.
+    i) {
+        let r = Sn();
+        return n.forEach((t => r = r.add(t))), e.getEntries(t, r).next((t => {
+            let r = An();
+            return n.forEach(((n, o) => {
+                const a = t.get(n), c = (null == i ? void 0 : i.get(n)) || s;
+                // Note: The order of the steps below is important, since we want
+                // to ensure that rejected limbo resolutions (which fabricate
+                // NoDocuments with SnapshotVersion.min()) never add documents to
+                // cache.
+                o.isNoDocument() && o.version.isEqual(ct.min()) ? (
+                // NoDocuments with SnapshotVersion.min() are used in manufactured
+                // events. We remove these documents from cache since we lost
+                // access.
+                e.removeEntry(n, c), r = r.insert(n, o)) : !a.isValidDocument() || o.version.compareTo(a.version) > 0 || 0 === o.version.compareTo(a.version) && a.hasPendingWrites ? (e.addEntry(o, c), 
+                r = r.insert(n, o)) : $("LocalStore", "Ignoring outdated watch update for ", n, ". Current version:", a.version, " Watch version:", o.version);
+            })), r;
+        }));
+    }
+
+    /**
      * Gets the mutation batch after the passed in batchId in the mutation queue
      * or null if empty.
      * @param afterBatchId - If provided, the batch to search after.
@@ -9350,6 +10346,89 @@ var app = (function () {
         const n = q(t);
         return n.persistence.runTransaction("Get next mutation batch", "readonly", (t => (void 0 === e && (e = -1), 
         n.An.getNextMutationBatchAfterBatchId(t, e))));
+    }
+
+    /**
+     * Reads the current value of a Document with a given key or null if not
+     * found - used for testing.
+     */
+    /**
+     * Assigns the given target an internal ID so that its results can be pinned so
+     * they don't get GC'd. A target must be allocated in the local store before
+     * the store can be used to manage its view.
+     *
+     * Allocating an already allocated `Target` will return the existing `TargetData`
+     * for that `Target`.
+     */
+    function pr(t, e) {
+        const n = q(t);
+        return n.persistence.runTransaction("Allocate target", "readwrite", (t => {
+            let s;
+            return n.He.getTargetData(t, e).next((i => i ? (
+            // This target has been listened to previously, so reuse the
+            // previous targetID.
+            // TODO(mcg): freshen last accessed date?
+            s = i, Gs.resolve(s)) : n.He.allocateTargetId(t).next((i => (s = new ai(e, i, 0 /* Listen */ , t.currentSequenceNumber), 
+            n.He.addTargetData(t, s).next((() => s)))))));
+        })).then((t => {
+            // If Multi-Tab is enabled, the existing target data may be newer than
+            // the in-memory data
+            const s = n.qn.get(t.targetId);
+            return (null === s || t.snapshotVersion.compareTo(s.snapshotVersion) > 0) && (n.qn = n.qn.insert(t.targetId, t), 
+            n.Kn.set(e, t.targetId)), t;
+        }));
+    }
+
+    /**
+     * Returns the TargetData as seen by the LocalStore, including updates that may
+     * have not yet been persisted to the TargetCache.
+     */
+    // Visible for testing.
+    /**
+     * Unpins all the documents associated with the given target. If
+     * `keepPersistedTargetData` is set to false and Eager GC enabled, the method
+     * directly removes the associated target data from the target cache.
+     *
+     * Releasing a non-existing `Target` is a no-op.
+     */
+    // PORTING NOTE: `keepPersistedTargetData` is multi-tab only.
+    async function Tr(t, e, n) {
+        const s = q(t), i = s.qn.get(e), r = n ? "readwrite" : "readwrite-primary";
+        try {
+            n || await s.persistence.runTransaction("Release target", r, (t => s.persistence.referenceDelegate.removeTarget(t, i)));
+        } catch (t) {
+            if (!Xs(t)) throw t;
+            // All `releaseTarget` does is record the final metadata state for the
+            // target, but we've been recording this periodically during target
+            // activity. If we lose this write this could cause a very slight
+            // difference in the order of target deletion during GC, but we
+            // don't define exact LRU semantics so this is acceptable.
+            $("LocalStore", `Failed to update sequence numbers for target ${e}: ${t}`);
+        }
+        s.qn = s.qn.remove(e), s.Kn.delete(i.target);
+    }
+
+    /**
+     * Runs the specified query against the local store and returns the results,
+     * potentially taking advantage of query data from previous executions (such
+     * as the set of remote keys).
+     *
+     * @param usePreviousResults - Whether results from previous executions can
+     * be used to optimize this query execution.
+     */ function Er(t, e, n) {
+        const s = q(t);
+        let i = ct.min(), r = Sn();
+        return s.persistence.runTransaction("Execute query", "readonly", (t => function(t, e, n) {
+            const s = q(t), i = s.Kn.get(n);
+            return void 0 !== i ? Gs.resolve(s.qn.get(i)) : s.He.getTargetData(e, n);
+        }(s, t, Re(e)).next((e => {
+            if (e) return i = e.lastLimboFreeSnapshotVersion, s.He.getMatchingKeysForTargetId(t, e.targetId).next((t => {
+                r = t;
+            }));
+        })).next((() => s.Un.getDocumentsMatchingQuery(t, e, n ? i : ct.min(), n ? r : Sn()))).next((t => ({
+            documents: t,
+            zn: r
+        })))));
     }
 
     /**
@@ -10830,6 +11909,65 @@ var app = (function () {
     }
 
     /**
+     * A PersistentStream that implements the Listen RPC.
+     *
+     * Once the Listen stream has called the onOpen() listener, any number of
+     * listen() and unlisten() calls can be made to control what changes will be
+     * sent from the server for ListenResponses.
+     */ class so extends no {
+        constructor(t, e, n, s, i, r) {
+            super(t, "listen_stream_connection_backoff" /* ListenStreamConnectionBackoff */ , "listen_stream_idle" /* ListenStreamIdle */ , "health_check_timeout" /* HealthCheckTimeout */ , e, n, s, r), 
+            this.k = i;
+        }
+        Rr(t, e) {
+            return this.ir.Qi("Listen", t, e);
+        }
+        onMessage(t) {
+            // A successful response means the stream is healthy
+            this.ur.reset();
+            const e = rs(this.k, t), n = function(t) {
+                // We have only reached a consistent snapshot for the entire stream if there
+                // is a read_time set and it applies to all targets (i.e. the list of
+                // targets is empty). The backend is guaranteed to send such responses.
+                if (!("targetChange" in t)) return ct.min();
+                const e = t.targetChange;
+                return e.targetIds && e.targetIds.length ? ct.min() : e.readTime ? Gn(e.readTime) : ct.min();
+            }(t);
+            return this.listener.Pr(e, n);
+        }
+        /**
+         * Registers interest in the results of the given target. If the target
+         * includes a resumeToken it will be included in the request. Results that
+         * affect the target will be streamed back as WatchChange messages that
+         * reference the targetId.
+         */    br(t) {
+            const e = {};
+            e.database = ts(this.k), e.addTarget = function(t, e) {
+                let n;
+                const s = e.target;
+                return n = Xt(s) ? {
+                    documents: us(t, s)
+                } : {
+                    query: hs(t, s)
+                }, n.targetId = e.targetId, e.resumeToken.approximateByteSize() > 0 ? n.resumeToken = Qn(t, e.resumeToken) : e.snapshotVersion.compareTo(ct.min()) > 0 && (
+                // TODO(wuandy): Consider removing above check because it is most likely true.
+                // Right now, many tests depend on this behaviour though (leaving min() out
+                // of serialization).
+                n.readTime = jn(t, e.snapshotVersion.toTimestamp())), n;
+            }(this.k, t);
+            const n = fs(this.k, t);
+            n && (e.labels = n), this.gr(e);
+        }
+        /**
+         * Unregisters interest in the results of the target associated with the
+         * given targetId.
+         */    vr(t) {
+            const e = {};
+            e.database = ts(this.k), e.removeTarget = t, this.gr(e);
+        }
+    }
+
+    /**
      * A Stream that implements the Write RPC.
      *
      * The Write RPC requires the caller to maintain special streamToken
@@ -11122,8 +12260,157 @@ var app = (function () {
         for (const e of t.zr) await e(/* enabled= */ !1);
     }
 
+    /**
+     * Starts new listen for the given target. Uses resume token if provided. It
+     * is a no-op if the target of given `TargetData` is already being listened to.
+     */
+    function ho(t, e) {
+        const n = q(t);
+        n.Wr.has(e.targetId) || (
+        // Mark this as something the client is currently listening for.
+        n.Wr.set(e.targetId, e), mo(n) ? 
+        // The listen will be sent in onWatchStreamOpen
+        _o(n) : xo(n).lr() && fo(n, e));
+    }
+
+    /**
+     * Removes the listen from server. It is a no-op if the given target id is
+     * not being listened to.
+     */ function lo(t, e) {
+        const n = q(t), s = xo(n);
+        n.Wr.delete(e), s.lr() && wo(n, e), 0 === n.Wr.size && (s.lr() ? s._r() : go(n) && 
+        // Revert to OnlineState.Unknown if the watch stream is not open and we
+        // have no listeners, since without any listens to send we cannot
+        // confirm if the stream is healthy and upgrade to OnlineState.Online.
+        n.Jr.set("Unknown" /* Unknown */));
+    }
+
+    /**
+     * We need to increment the the expected number of pending responses we're due
+     * from watch so we wait for the ack to process any messages from this target.
+     */ function fo(t, e) {
+        t.Yr.X(e.targetId), xo(t).br(e);
+    }
+
+    /**
+     * We need to increment the expected number of pending responses we're due
+     * from watch so we wait for the removal on the server before we process any
+     * messages from this target.
+     */ function wo(t, e) {
+        t.Yr.X(e), xo(t).vr(e);
+    }
+
+    function _o(t) {
+        t.Yr = new Mn({
+            getRemoteKeysForTarget: e => t.remoteSyncer.getRemoteKeysForTarget(e),
+            Et: e => t.Wr.get(e) || null
+        }), xo(t).start(), t.Jr.Br();
+    }
+
+    /**
+     * Returns whether the watch stream should be started because it's necessary
+     * and has not yet been started.
+     */ function mo(t) {
+        return go(t) && !xo(t).hr() && t.Wr.size > 0;
+    }
+
     function go(t) {
         return 0 === q(t).Gr.size;
+    }
+
+    function yo(t) {
+        t.Yr = void 0;
+    }
+
+    async function po(t) {
+        t.Wr.forEach(((e, n) => {
+            fo(t, e);
+        }));
+    }
+
+    async function To(t, e) {
+        yo(t), 
+        // If we still need the watch stream, retry the connection.
+        mo(t) ? (t.Jr.Kr(e), _o(t)) : 
+        // No need to restart watch stream because there are no active targets.
+        // The online state is set to unknown because there is no active attempt
+        // at establishing a connection
+        t.Jr.set("Unknown" /* Unknown */);
+    }
+
+    async function Eo(t, e, n) {
+        if (
+        // Mark the client as online since we got a message from the server
+        t.Jr.set("Online" /* Online */), e instanceof Fn && 2 /* Removed */ === e.state && e.cause) 
+        // There was an error on a target, don't wait for a consistent snapshot
+        // to raise events
+        try {
+            await 
+            /** Handles an error on a target */
+            async function(t, e) {
+                const n = e.cause;
+                for (const s of e.targetIds) 
+                // A watched target might have been removed already.
+                t.Wr.has(s) && (await t.remoteSyncer.rejectListen(s, n), t.Wr.delete(s), t.Yr.removeTarget(s));
+            }
+            /**
+     * Attempts to fill our write pipeline with writes from the LocalStore.
+     *
+     * Called internally to bootstrap or refill the write pipeline and by
+     * SyncEngine whenever there are new mutations to process.
+     *
+     * Starts the write stream if necessary.
+     */ (t, e);
+        } catch (n) {
+            $("RemoteStore", "Failed to remove targets %s: %s ", e.targetIds.join(","), n), 
+            await Io(t, n);
+        } else if (e instanceof xn ? t.Yr.ot(e) : e instanceof $n ? t.Yr.dt(e) : t.Yr.ut(e), 
+        !n.isEqual(ct.min())) try {
+            const e = await _r(t.localStore);
+            n.compareTo(e) >= 0 && 
+            // We have received a target change with a global snapshot if the snapshot
+            // version is not equal to SnapshotVersion.min().
+            await 
+            /**
+     * Takes a batch of changes from the Datastore, repackages them as a
+     * RemoteEvent, and passes that on to the listener, which is typically the
+     * SyncEngine.
+     */
+            function(t, e) {
+                const n = t.Yr.gt(e);
+                // Update in-memory resume tokens. LocalStore will update the
+                // persistent view of these when applying the completed RemoteEvent.
+                            return n.targetChanges.forEach(((n, s) => {
+                    if (n.resumeToken.approximateByteSize() > 0) {
+                        const i = t.Wr.get(s);
+                        // A watched target might have been removed already.
+                                            i && t.Wr.set(s, i.withResumeToken(n.resumeToken, e));
+                    }
+                })), 
+                // Re-establish listens for the targets that have been invalidated by
+                // existence filter mismatches.
+                n.targetMismatches.forEach((e => {
+                    const n = t.Wr.get(e);
+                    if (!n) 
+                    // A watched target might have been removed already.
+                    return;
+                    // Clear the resume token for the target, since we're in a known mismatch
+                    // state.
+                                    t.Wr.set(e, n.withResumeToken(yt.EMPTY_BYTE_STRING, n.snapshotVersion)), 
+                    // Cause a hard reset by unwatching and rewatching immediately, but
+                    // deliberately don't send a resume token so that we get a full update.
+                    wo(t, e);
+                    // Mark the target we send as being on behalf of an existence filter
+                    // mismatch, but don't actually retain that in listenTargets. This ensures
+                    // that we flag the first re-listen this way without impacting future
+                    // listens of this target (that might happen e.g. on reconnect).
+                    const s = new ai(n.target, e, 1 /* ExistenceFilterMismatch */ , n.sequenceNumber);
+                    fo(t, s);
+                })), t.remoteSyncer.applyRemoteEvent(n);
+            }(t, n);
+        } catch (e) {
+            $("RemoteStore", "Failed to raise snapshot:", e), await Io(t, e);
+        }
     }
 
     /**
@@ -11252,6 +12539,45 @@ var app = (function () {
     }
 
     /**
+     * If not yet initialized, registers the WatchStream and its network state
+     * callback with `remoteStoreImpl`. Returns the existing stream if one is
+     * already available.
+     *
+     * PORTING NOTE: On iOS and Android, the WatchStream gets registered on startup.
+     * This is not done on Web to allow it to be tree-shaken.
+     */ function xo(t) {
+        return t.Xr || (
+        // Create stream (but note that it is not started yet).
+        t.Xr = function(t, e, n) {
+            const s = q(t);
+            return s.Fr(), new so(e, s.ir, s.authCredentials, s.appCheckCredentials, s.k, n);
+        }
+        /**
+     * @license
+     * Copyright 2018 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */ (t.datastore, t.asyncQueue, {
+            Di: po.bind(null, t),
+            Ni: To.bind(null, t),
+            Pr: Eo.bind(null, t)
+        }), t.zr.push((async e => {
+            e ? (t.Xr.wr(), mo(t) ? _o(t) : t.Jr.set("Unknown" /* Unknown */)) : (await t.Xr.stop(), 
+            yo(t));
+        }))), t.Xr;
+    }
+
+    /**
      * If not yet initialized, registers the WriteStream and its network state
      * callback with `remoteStoreImpl`. Returns the existing stream if one is
      * already available.
@@ -11369,6 +12695,213 @@ var app = (function () {
         throw t;
     }
 
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * DocumentSet is an immutable (copy-on-write) collection that holds documents
+     * in order specified by the provided comparator. We always add a document key
+     * comparator on top of what is provided to guarantee document equality based on
+     * the key.
+     */ class Mo {
+        /** The default ordering is by key if the comparator is omitted */
+        constructor(t) {
+            // We are adding document key comparator to the end as it's the only
+            // guaranteed unique property of a document.
+            this.comparator = t ? (e, n) => t(e, n) || St.comparator(e.key, n.key) : (t, e) => St.comparator(t.key, e.key), 
+            this.keyedMap = Pn(), this.sortedSet = new gn(this.comparator);
+        }
+        /**
+         * Returns an empty copy of the existing DocumentSet, using the same
+         * comparator.
+         */    static emptySet(t) {
+            return new Mo(t.comparator);
+        }
+        has(t) {
+            return null != this.keyedMap.get(t);
+        }
+        get(t) {
+            return this.keyedMap.get(t);
+        }
+        first() {
+            return this.sortedSet.minKey();
+        }
+        last() {
+            return this.sortedSet.maxKey();
+        }
+        isEmpty() {
+            return this.sortedSet.isEmpty();
+        }
+        /**
+         * Returns the index of the provided key in the document set, or -1 if the
+         * document key is not present in the set;
+         */    indexOf(t) {
+            const e = this.keyedMap.get(t);
+            return e ? this.sortedSet.indexOf(e) : -1;
+        }
+        get size() {
+            return this.sortedSet.size;
+        }
+        /** Iterates documents in order defined by "comparator" */    forEach(t) {
+            this.sortedSet.inorderTraversal(((e, n) => (t(e), !1)));
+        }
+        /** Inserts or updates a document with the same key */    add(t) {
+            // First remove the element if we have it.
+            const e = this.delete(t.key);
+            return e.copy(e.keyedMap.insert(t.key, t), e.sortedSet.insert(t, null));
+        }
+        /** Deletes a document with a given key */    delete(t) {
+            const e = this.get(t);
+            return e ? this.copy(this.keyedMap.remove(t), this.sortedSet.remove(e)) : this;
+        }
+        isEqual(t) {
+            if (!(t instanceof Mo)) return !1;
+            if (this.size !== t.size) return !1;
+            const e = this.sortedSet.getIterator(), n = t.sortedSet.getIterator();
+            for (;e.hasNext(); ) {
+                const t = e.getNext().key, s = n.getNext().key;
+                if (!t.isEqual(s)) return !1;
+            }
+            return !0;
+        }
+        toString() {
+            const t = [];
+            return this.forEach((e => {
+                t.push(e.toString());
+            })), 0 === t.length ? "DocumentSet ()" : "DocumentSet (\n  " + t.join("  \n") + "\n)";
+        }
+        copy(t, e) {
+            const n = new Mo;
+            return n.comparator = this.comparator, n.keyedMap = t, n.sortedSet = e, n;
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * DocumentChangeSet keeps track of a set of changes to docs in a query, merging
+     * duplicate events for the same doc.
+     */ class Lo {
+        constructor() {
+            this.eo = new gn(St.comparator);
+        }
+        track(t) {
+            const e = t.doc.key, n = this.eo.get(e);
+            n ? 
+            // Merge the new change with the existing change.
+            0 /* Added */ !== t.type && 3 /* Metadata */ === n.type ? this.eo = this.eo.insert(e, t) : 3 /* Metadata */ === t.type && 1 /* Removed */ !== n.type ? this.eo = this.eo.insert(e, {
+                type: n.type,
+                doc: t.doc
+            }) : 2 /* Modified */ === t.type && 2 /* Modified */ === n.type ? this.eo = this.eo.insert(e, {
+                type: 2 /* Modified */ ,
+                doc: t.doc
+            }) : 2 /* Modified */ === t.type && 0 /* Added */ === n.type ? this.eo = this.eo.insert(e, {
+                type: 0 /* Added */ ,
+                doc: t.doc
+            }) : 1 /* Removed */ === t.type && 0 /* Added */ === n.type ? this.eo = this.eo.remove(e) : 1 /* Removed */ === t.type && 2 /* Modified */ === n.type ? this.eo = this.eo.insert(e, {
+                type: 1 /* Removed */ ,
+                doc: n.doc
+            }) : 0 /* Added */ === t.type && 1 /* Removed */ === n.type ? this.eo = this.eo.insert(e, {
+                type: 2 /* Modified */ ,
+                doc: t.doc
+            }) : 
+            // This includes these cases, which don't make sense:
+            // Added->Added
+            // Removed->Removed
+            // Modified->Added
+            // Removed->Modified
+            // Metadata->Added
+            // Removed->Metadata
+            L() : this.eo = this.eo.insert(e, t);
+        }
+        no() {
+            const t = [];
+            return this.eo.inorderTraversal(((e, n) => {
+                t.push(n);
+            })), t;
+        }
+    }
+
+    class Bo {
+        constructor(t, e, n, s, i, r, o, a) {
+            this.query = t, this.docs = e, this.oldDocs = n, this.docChanges = s, this.mutatedKeys = i, 
+            this.fromCache = r, this.syncStateChanged = o, this.excludesMetadataChanges = a;
+        }
+        /** Returns a view snapshot as if all documents in the snapshot were added. */    static fromInitialDocuments(t, e, n, s) {
+            const i = [];
+            return e.forEach((t => {
+                i.push({
+                    type: 0 /* Added */ ,
+                    doc: t
+                });
+            })), new Bo(t, e, Mo.emptySet(e), i, n, s, 
+            /* syncStateChanged= */ !0, 
+            /* excludesMetadataChanges= */ !1);
+        }
+        get hasPendingWrites() {
+            return !this.mutatedKeys.isEmpty();
+        }
+        isEqual(t) {
+            if (!(this.fromCache === t.fromCache && this.syncStateChanged === t.syncStateChanged && this.mutatedKeys.isEqual(t.mutatedKeys) && be(this.query, t.query) && this.docs.isEqual(t.docs) && this.oldDocs.isEqual(t.oldDocs))) return !1;
+            const e = this.docChanges, n = t.docChanges;
+            if (e.length !== n.length) return !1;
+            for (let t = 0; t < e.length; t++) if (e[t].type !== n[t].type || !e[t].doc.isEqual(n[t].doc)) return !1;
+            return !0;
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * Holds the listeners and the last received ViewSnapshot for a query being
+     * tracked by EventManager.
+     */ class Uo {
+        constructor() {
+            this.so = void 0, this.listeners = [];
+        }
+    }
+
     class qo {
         constructor() {
             this.queries = new Gi((t => ve(t)), be), this.onlineState = "Unknown" /* Unknown */ , 
@@ -11376,11 +12909,457 @@ var app = (function () {
         }
     }
 
+    async function Ko(t, e) {
+        const n = q(t), s = e.query;
+        let i = !1, r = n.queries.get(s);
+        if (r || (i = !0, r = new Uo), i) try {
+            r.so = await n.onListen(s);
+        } catch (t) {
+            const n = Oo(t, `Initialization of query '${Ve(e.query)}' failed`);
+            return void e.onError(n);
+        }
+        if (n.queries.set(s, r), r.listeners.push(e), 
+        // Run global snapshot listeners if a consistent snapshot has been emitted.
+        e.ro(n.onlineState), r.so) {
+            e.oo(r.so) && Go(n);
+        }
+    }
+
+    async function jo(t, e) {
+        const n = q(t), s = e.query;
+        let i = !1;
+        const r = n.queries.get(s);
+        if (r) {
+            const t = r.listeners.indexOf(e);
+            t >= 0 && (r.listeners.splice(t, 1), i = 0 === r.listeners.length);
+        }
+        if (i) return n.queries.delete(s), n.onUnlisten(s);
+    }
+
+    function Qo(t, e) {
+        const n = q(t);
+        let s = !1;
+        for (const t of e) {
+            const e = t.query, i = n.queries.get(e);
+            if (i) {
+                for (const e of i.listeners) e.oo(t) && (s = !0);
+                i.so = t;
+            }
+        }
+        s && Go(n);
+    }
+
+    function Wo(t, e, n) {
+        const s = q(t), i = s.queries.get(e);
+        if (i) for (const t of i.listeners) t.onError(n);
+        // Remove all listeners. NOTE: We don't need to call syncEngine.unlisten()
+        // after an error.
+            s.queries.delete(e);
+    }
+
     // Call all global snapshot listeners that have been set.
     function Go(t) {
         t.io.forEach((t => {
             t.next();
         }));
+    }
+
+    /**
+     * QueryListener takes a series of internal view snapshots and determines
+     * when to raise the event.
+     *
+     * It uses an Observer to dispatch events.
+     */ class zo {
+        constructor(t, e, n) {
+            this.query = t, this.ao = e, 
+            /**
+             * Initial snapshots (e.g. from cache) may not be propagated to the wrapped
+             * observer. This flag is set to true once we've actually raised an event.
+             */
+            this.co = !1, this.uo = null, this.onlineState = "Unknown" /* Unknown */ , this.options = n || {};
+        }
+        /**
+         * Applies the new ViewSnapshot to this listener, raising a user-facing event
+         * if applicable (depending on what changed, whether the user has opted into
+         * metadata-only changes, etc.). Returns true if a user-facing event was
+         * indeed raised.
+         */    oo(t) {
+            if (!this.options.includeMetadataChanges) {
+                // Remove the metadata only changes.
+                const e = [];
+                for (const n of t.docChanges) 3 /* Metadata */ !== n.type && e.push(n);
+                t = new Bo(t.query, t.docs, t.oldDocs, e, t.mutatedKeys, t.fromCache, t.syncStateChanged, 
+                /* excludesMetadataChanges= */ !0);
+            }
+            let e = !1;
+            return this.co ? this.ho(t) && (this.ao.next(t), e = !0) : this.lo(t, this.onlineState) && (this.fo(t), 
+            e = !0), this.uo = t, e;
+        }
+        onError(t) {
+            this.ao.error(t);
+        }
+        /** Returns whether a snapshot was raised. */    ro(t) {
+            this.onlineState = t;
+            let e = !1;
+            return this.uo && !this.co && this.lo(this.uo, t) && (this.fo(this.uo), e = !0), 
+            e;
+        }
+        lo(t, e) {
+            // Always raise the first event when we're synced
+            if (!t.fromCache) return !0;
+            // NOTE: We consider OnlineState.Unknown as online (it should become Offline
+            // or Online if we wait long enough).
+                    const n = "Offline" /* Offline */ !== e;
+            // Don't raise the event if we're online, aren't synced yet (checked
+            // above) and are waiting for a sync.
+                    return (!this.options.wo || !n) && (!t.docs.isEmpty() || "Offline" /* Offline */ === e);
+            // Raise data from cache if we have any documents or we are offline
+            }
+        ho(t) {
+            // We don't need to handle includeDocumentMetadataChanges here because
+            // the Metadata only changes have already been stripped out if needed.
+            // At this point the only changes we will see are the ones we should
+            // propagate.
+            if (t.docChanges.length > 0) return !0;
+            const e = this.uo && this.uo.hasPendingWrites !== t.hasPendingWrites;
+            return !(!t.syncStateChanged && !e) && !0 === this.options.includeMetadataChanges;
+            // Generally we should have hit one of the cases above, but it's possible
+            // to get here if there were only metadata docChanges and they got
+            // stripped out.
+            }
+        fo(t) {
+            t = Bo.fromInitialDocuments(t.query, t.docs, t.mutatedKeys, t.fromCache), this.co = !0, 
+            this.ao.next(t);
+        }
+    }
+
+    /**
+     * Returns a `LoadBundleTaskProgress` representing the progress that the loading
+     * has succeeded.
+     */
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    class Zo {
+        constructor(t) {
+            this.key = t;
+        }
+    }
+
+    class ta {
+        constructor(t) {
+            this.key = t;
+        }
+    }
+
+    /**
+     * View is responsible for computing the final merged truth of what docs are in
+     * a query. It gets notified of local and remote changes to docs, and applies
+     * the query filters and limits to determine the most correct possible results.
+     */ class ea {
+        constructor(t, 
+        /** Documents included in the remote target */
+        e) {
+            this.query = t, this.To = e, this.Eo = null, 
+            /**
+             * A flag whether the view is current with the backend. A view is considered
+             * current after it has seen the current flag from the backend and did not
+             * lose consistency within the watch stream (e.g. because of an existence
+             * filter mismatch).
+             */
+            this.current = !1, 
+            /** Documents in the view but not in the remote target */
+            this.Io = Sn(), 
+            /** Document Keys that have local changes */
+            this.mutatedKeys = Sn(), this.Ao = De(t), this.Ro = new Mo(this.Ao);
+        }
+        /**
+         * The set of remote documents that the server has told us belongs to the target associated with
+         * this view.
+         */    get Po() {
+            return this.To;
+        }
+        /**
+         * Iterates over a set of doc changes, applies the query limit, and computes
+         * what the new results should be, what the changes were, and whether we may
+         * need to go back to the local cache for more results. Does not make any
+         * changes to the view.
+         * @param docChanges - The doc changes to apply to this view.
+         * @param previousChanges - If this is being called with a refill, then start
+         *        with this set of docs and changes instead of the current view.
+         * @returns a new set of docs, changes, and refill flag.
+         */    bo(t, e) {
+            const n = e ? e.vo : new Lo, s = e ? e.Ro : this.Ro;
+            let i = e ? e.mutatedKeys : this.mutatedKeys, r = s, o = !1;
+            // Track the last doc in a (full) limit. This is necessary, because some
+            // update (a delete, or an update moving a doc past the old limit) might
+            // mean there is some other document in the local cache that either should
+            // come (1) between the old last limit doc and the new last document, in the
+            // case of updates, or (2) after the new last document, in the case of
+            // deletes. So we keep this doc at the old limit to compare the updates to.
+            // Note that this should never get used in a refill (when previousChanges is
+            // set), because there will only be adds -- no deletes or updates.
+            const a = ye(this.query) && s.size === this.query.limit ? s.last() : null, c = pe(this.query) && s.size === this.query.limit ? s.first() : null;
+            // Drop documents out to meet limit/limitToLast requirement.
+            if (t.inorderTraversal(((t, e) => {
+                const u = s.get(t), h = Se(this.query, e) ? e : null, l = !!u && this.mutatedKeys.has(u.key), f = !!h && (h.hasLocalMutations || 
+                // We only consider committed mutations for documents that were
+                // mutated during the lifetime of the view.
+                this.mutatedKeys.has(h.key) && h.hasCommittedMutations);
+                let d = !1;
+                // Calculate change
+                            if (u && h) {
+                    u.data.isEqual(h.data) ? l !== f && (n.track({
+                        type: 3 /* Metadata */ ,
+                        doc: h
+                    }), d = !0) : this.Vo(u, h) || (n.track({
+                        type: 2 /* Modified */ ,
+                        doc: h
+                    }), d = !0, (a && this.Ao(h, a) > 0 || c && this.Ao(h, c) < 0) && (
+                    // This doc moved from inside the limit to outside the limit.
+                    // That means there may be some other doc in the local cache
+                    // that should be included instead.
+                    o = !0));
+                } else !u && h ? (n.track({
+                    type: 0 /* Added */ ,
+                    doc: h
+                }), d = !0) : u && !h && (n.track({
+                    type: 1 /* Removed */ ,
+                    doc: u
+                }), d = !0, (a || c) && (
+                // A doc was removed from a full limit query. We'll need to
+                // requery from the local cache to see if we know about some other
+                // doc that should be in the results.
+                o = !0));
+                d && (h ? (r = r.add(h), i = f ? i.add(t) : i.delete(t)) : (r = r.delete(t), i = i.delete(t)));
+            })), ye(this.query) || pe(this.query)) for (;r.size > this.query.limit; ) {
+                const t = ye(this.query) ? r.last() : r.first();
+                r = r.delete(t.key), i = i.delete(t.key), n.track({
+                    type: 1 /* Removed */ ,
+                    doc: t
+                });
+            }
+            return {
+                Ro: r,
+                vo: n,
+                Bn: o,
+                mutatedKeys: i
+            };
+        }
+        Vo(t, e) {
+            // We suppress the initial change event for documents that were modified as
+            // part of a write acknowledgment (e.g. when the value of a server transform
+            // is applied) as Watch will send us the same document again.
+            // By suppressing the event, we only raise two user visible events (one with
+            // `hasPendingWrites` and the final state of the document) instead of three
+            // (one with `hasPendingWrites`, the modified document with
+            // `hasPendingWrites` and the final state of the document).
+            return t.hasLocalMutations && e.hasCommittedMutations && !e.hasLocalMutations;
+        }
+        /**
+         * Updates the view with the given ViewDocumentChanges and optionally updates
+         * limbo docs and sync state from the provided target change.
+         * @param docChanges - The set of changes to make to the view's docs.
+         * @param updateLimboDocuments - Whether to update limbo documents based on
+         *        this change.
+         * @param targetChange - A target change to apply for computing limbo docs and
+         *        sync state.
+         * @returns A new ViewChange with the given docs, changes, and sync state.
+         */
+        // PORTING NOTE: The iOS/Android clients always compute limbo document changes.
+        applyChanges(t, e, n) {
+            const s = this.Ro;
+            this.Ro = t.Ro, this.mutatedKeys = t.mutatedKeys;
+            // Sort changes based on type and query comparator
+            const i = t.vo.no();
+            i.sort(((t, e) => function(t, e) {
+                const n = t => {
+                    switch (t) {
+                      case 0 /* Added */ :
+                        return 1;
+
+                      case 2 /* Modified */ :
+                      case 3 /* Metadata */ :
+                        // A metadata change is converted to a modified change at the public
+                        // api layer.  Since we sort by document key and then change type,
+                        // metadata and modified changes must be sorted equivalently.
+                        return 2;
+
+                      case 1 /* Removed */ :
+                        return 0;
+
+                      default:
+                        return L();
+                    }
+                };
+                return n(t) - n(e);
+            }
+            /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */ (t.type, e.type) || this.Ao(t.doc, e.doc))), this.So(n);
+            const r = e ? this.Do() : [], o = 0 === this.Io.size && this.current ? 1 /* Synced */ : 0 /* Local */ , a = o !== this.Eo;
+            if (this.Eo = o, 0 !== i.length || a) {
+                return {
+                    snapshot: new Bo(this.query, t.Ro, s, i, t.mutatedKeys, 0 /* Local */ === o, a, 
+                    /* excludesMetadataChanges= */ !1),
+                    Co: r
+                };
+            }
+            // no changes
+            return {
+                Co: r
+            };
+        }
+        /**
+         * Applies an OnlineState change to the view, potentially generating a
+         * ViewChange if the view's syncState changes as a result.
+         */    ro(t) {
+            return this.current && "Offline" /* Offline */ === t ? (
+            // If we're offline, set `current` to false and then call applyChanges()
+            // to refresh our syncState and generate a ViewChange as appropriate. We
+            // are guaranteed to get a new TargetChange that sets `current` back to
+            // true once the client is back online.
+            this.current = !1, this.applyChanges({
+                Ro: this.Ro,
+                vo: new Lo,
+                mutatedKeys: this.mutatedKeys,
+                Bn: !1
+            }, 
+            /* updateLimboDocuments= */ !1)) : {
+                Co: []
+            };
+        }
+        /**
+         * Returns whether the doc for the given key should be in limbo.
+         */    No(t) {
+            // If the remote end says it's part of this query, it's not in limbo.
+            return !this.To.has(t) && (
+            // The local store doesn't think it's a result, so it shouldn't be in limbo.
+            !!this.Ro.has(t) && !this.Ro.get(t).hasLocalMutations);
+        }
+        /**
+         * Updates syncedDocuments, current, and limbo docs based on the given change.
+         * Returns the list of changes to which docs are in limbo.
+         */    So(t) {
+            t && (t.addedDocuments.forEach((t => this.To = this.To.add(t))), t.modifiedDocuments.forEach((t => {})), 
+            t.removedDocuments.forEach((t => this.To = this.To.delete(t))), this.current = t.current);
+        }
+        Do() {
+            // We can only determine limbo documents when we're in-sync with the server.
+            if (!this.current) return [];
+            // TODO(klimt): Do this incrementally so that it's not quadratic when
+            // updating many documents.
+                    const t = this.Io;
+            this.Io = Sn(), this.Ro.forEach((t => {
+                this.No(t.key) && (this.Io = this.Io.add(t.key));
+            }));
+            // Diff the new limbo docs with the old limbo docs.
+            const e = [];
+            return t.forEach((t => {
+                this.Io.has(t) || e.push(new ta(t));
+            })), this.Io.forEach((n => {
+                t.has(n) || e.push(new Zo(n));
+            })), e;
+        }
+        /**
+         * Update the in-memory state of the current view with the state read from
+         * persistence.
+         *
+         * We update the query view whenever a client's primary status changes:
+         * - When a client transitions from primary to secondary, it can miss
+         *   LocalStorage updates and its query views may temporarily not be
+         *   synchronized with the state on disk.
+         * - For secondary to primary transitions, the client needs to update the list
+         *   of `syncedDocuments` since secondary clients update their query views
+         *   based purely on synthesized RemoteEvents.
+         *
+         * @param queryResult.documents - The documents that match the query according
+         * to the LocalStore.
+         * @param queryResult.remoteKeys - The keys of the documents that match the
+         * query according to the backend.
+         *
+         * @returns The ViewChange that resulted from this synchronization.
+         */
+        // PORTING NOTE: Multi-tab only.
+        ko(t) {
+            this.To = t.zn, this.Io = Sn();
+            const e = this.bo(t.documents);
+            return this.applyChanges(e, /*updateLimboDocuments=*/ !0);
+        }
+        /**
+         * Returns a view snapshot as if this query was just listened to. Contains
+         * a document add for every existing document and the `fromCache` and
+         * `hasPendingWrites` status of the already established view.
+         */
+        // PORTING NOTE: Multi-tab only.
+        xo() {
+            return Bo.fromInitialDocuments(this.query, this.Ro, this.mutatedKeys, 0 /* Local */ === this.Eo);
+        }
+    }
+
+    /**
+     * QueryView contains all of the data that SyncEngine needs to keep track of for
+     * a particular query.
+     */
+    class na {
+        constructor(
+        /**
+         * The query itself.
+         */
+        t, 
+        /**
+         * The target number created by the client that is used in the watch
+         * stream to identify this query.
+         */
+        e, 
+        /**
+         * The view is responsible for computing the final merged truth of what
+         * docs are in the query. It gets notified of local and remote changes,
+         * and applies the query filters and limits to determine the most correct
+         * possible results.
+         */
+        n) {
+            this.query = t, this.targetId = e, this.view = n;
+        }
+    }
+
+    /** Tracks a limbo resolution. */ class sa {
+        constructor(t) {
+            this.key = t, 
+            /**
+             * Set to true once we've received a document. This is used in
+             * getRemoteKeysForTarget() and ultimately used by WatchChangeAggregator to
+             * decide whether it needs to manufacture a delete event for the target once
+             * the target is CURRENT.
+             */
+            this.$o = !1;
+        }
     }
 
     /**
@@ -11434,6 +13413,73 @@ var app = (function () {
         get isPrimaryClient() {
             return !0 === this.Wo;
         }
+    }
+
+    /**
+     * Initiates the new listen, resolves promise when listen enqueued to the
+     * server. All the subsequent view snapshots or errors are sent to the
+     * subscribed handlers. Returns the initial snapshot.
+     */
+    async function ra(t, e) {
+        const n = xa(t);
+        let s, i;
+        const r = n.Oo.get(e);
+        if (r) 
+        // PORTING NOTE: With Multi-Tab Web, it is possible that a query view
+        // already exists when EventManager calls us for the first time. This
+        // happens when the primary tab is already listening to this query on
+        // behalf of another tab and the user of the primary also starts listening
+        // to the query. EventManager will not have an assigned target ID in this
+        // case and calls `listen` to obtain this ID.
+        s = r.targetId, n.sharedClientState.addLocalQueryTarget(s), i = r.view.xo(); else {
+            const t = await pr(n.localStore, Re(e)), r = n.sharedClientState.addLocalQueryTarget(t.targetId);
+            s = t.targetId, i = await oa(n, e, s, "current" === r), n.isPrimaryClient && ho(n.remoteStore, t);
+        }
+        return i;
+    }
+
+    /**
+     * Registers a view for a previously unknown query and computes its initial
+     * snapshot.
+     */ async function oa(t, e, n, s) {
+        // PORTING NOTE: On Web only, we inject the code that registers new Limbo
+        // targets based on view changes. This allows us to only depend on Limbo
+        // changes when user code includes queries.
+        t.Go = (e, n, s) => async function(t, e, n, s) {
+            let i = e.view.bo(n);
+            i.Bn && (
+            // The query has a limit and some docs were removed, so we need
+            // to re-run the query against the local store to make sure we
+            // didn't lose any good docs that had been past the limit.
+            i = await Er(t.localStore, e.query, 
+            /* usePreviousResults= */ !1).then((({documents: t}) => e.view.bo(t, i))));
+            const r = s && s.targetChanges.get(e.targetId), o = e.view.applyChanges(i, 
+            /* updateLimboDocuments= */ t.isPrimaryClient, r);
+            return pa(t, e.targetId, o.Co), o.snapshot;
+        }(t, e, n, s);
+        const i = await Er(t.localStore, e, 
+        /* usePreviousResults= */ !0), r = new ea(e, i.zn), o = r.bo(i.documents), a = kn.createSynthesizedTargetChangeForCurrentChange(n, s && "Offline" /* Offline */ !== t.onlineState), c = r.applyChanges(o, 
+        /* updateLimboDocuments= */ t.isPrimaryClient, a);
+        pa(t, n, c.Co);
+        const u = new na(e, n, r);
+        return t.Oo.set(e, u), t.Mo.has(n) ? t.Mo.get(n).push(e) : t.Mo.set(n, [ e ]), c.snapshot;
+    }
+
+    /** Stops listening to the query. */ async function aa(t, e) {
+        const n = q(t), s = n.Oo.get(e), i = n.Mo.get(s.targetId);
+        if (i.length > 1) return n.Mo.set(s.targetId, i.filter((t => !be(t, e)))), void n.Oo.delete(e);
+        // No other queries are mapped to the target, clean up the query and the target.
+            if (n.isPrimaryClient) {
+            // We need to remove the local query target first to allow us to verify
+            // whether any other client is still interested in this target.
+            n.sharedClientState.removeLocalQueryTarget(s.targetId);
+            n.sharedClientState.isActiveQueryTarget(s.targetId) || await Tr(n.localStore, s.targetId, 
+            /*keepPersistedTargetData=*/ !1).then((() => {
+                n.sharedClientState.clearQueryState(s.targetId), lo(n.remoteStore, s.targetId), 
+                ga(n, s.targetId);
+            })).catch(Bi);
+        } else ga(n, s.targetId), await Tr(n.localStore, s.targetId, 
+        /*keepPersistedTargetData=*/ !0);
     }
 
     /**
@@ -11491,6 +13537,29 @@ var app = (function () {
     }
 
     /**
+     * Applies one remote event to the sync engine, notifying any views of the
+     * changes, and releasing any pending mutation batches that would become
+     * visible because of the snapshot version the remote event contains.
+     */ async function ua(t, e) {
+        const n = q(t);
+        try {
+            const t = await mr(n.localStore, e);
+            // Update `receivedDocument` as appropriate for any limbo targets.
+                    e.targetChanges.forEach(((t, e) => {
+                const s = n.Uo.get(e);
+                s && (
+                // Since this is a limbo resolution lookup, it's for a single document
+                // and it could be added, modified, or removed, but not a combination.
+                B(t.addedDocuments.size + t.modifiedDocuments.size + t.removedDocuments.size <= 1), 
+                t.addedDocuments.size > 0 ? s.$o = !0 : t.modifiedDocuments.size > 0 ? B(s.$o) : t.removedDocuments.size > 0 && (B(s.$o), 
+                s.$o = !1));
+            })), await Ia(n, t, e);
+        } catch (t) {
+            await Bi(t);
+        }
+    }
+
+    /**
      * Applies an OnlineState change to the sync engine and notifies any views of
      * the change.
      */ function ha(t, e, n) {
@@ -11515,6 +13584,44 @@ var app = (function () {
                 })), s && Go(n);
             }(s.eventManager, e), t.length && s.Fo.Pr(t), s.onlineState = e, s.isPrimaryClient && s.sharedClientState.setOnlineState(e);
         }
+    }
+
+    /**
+     * Rejects the listen for the given targetID. This can be triggered by the
+     * backend for any active target.
+     *
+     * @param syncEngine - The sync engine implementation.
+     * @param targetId - The targetID corresponds to one previously initiated by the
+     * user as part of TargetData passed to listen() on RemoteStore.
+     * @param err - A description of the condition that has forced the rejection.
+     * Nearly always this will be an indication that the user is no longer
+     * authorized to see the data matching the target.
+     */ async function la(t, e, n) {
+        const s = q(t);
+        // PORTING NOTE: Multi-tab only.
+            s.sharedClientState.updateQueryState(e, "rejected", n);
+        const i = s.Uo.get(e), r = i && i.key;
+        if (r) {
+            // TODO(klimt): We really only should do the following on permission
+            // denied errors, but we don't have the cause code here.
+            // It's a limbo doc. Create a synthetic event saying it was deleted.
+            // This is kind of a hack. Ideally, we would have a method in the local
+            // store to purge a document. However, it would be tricky to keep all of
+            // the local store's invariants with another method.
+            let t = new gn(St.comparator);
+            t = t.insert(r, Wt.newNoDocument(r, ct.min()));
+            const n = Sn().add(r), i = new Nn(ct.min(), 
+            /* targetChanges= */ new Map, 
+            /* targetMismatches= */ new Tn(it), t, n);
+            await ua(s, i), 
+            // Since this query failed, we won't want to manually unlisten to it.
+            // We only remove it from bookkeeping after we successfully applied the
+            // RemoteEvent. If `applyRemoteEvent()` throws, we want to re-listen to
+            // this query when the RemoteStore restarts the Watch stream, which should
+            // re-trigger the target failure.
+            s.Bo = s.Bo.remove(r), s.Uo.delete(e), Ea(s);
+        } else await Tr(s.localStore, e, 
+        /* keepPersistedTargetData */ !1).then((() => ga(s, e, n))).catch(Bi);
     }
 
     async function fa(t, e) {
@@ -11579,6 +13686,57 @@ var app = (function () {
         }
     }
 
+    function ga(t, e, n = null) {
+        t.sharedClientState.removeLocalQueryTarget(e);
+        for (const s of t.Mo.get(e)) t.Oo.delete(s), n && t.Fo.zo(s, n);
+        if (t.Mo.delete(e), t.isPrimaryClient) {
+            t.qo.us(e).forEach((e => {
+                t.qo.containsKey(e) || 
+                // We removed the last reference for this key
+                ya(t, e);
+            }));
+        }
+    }
+
+    function ya(t, e) {
+        t.Lo.delete(e.path.canonicalString());
+        // It's possible that the target already got removed because the query failed. In that case,
+        // the key won't exist in `limboTargetsByKey`. Only do the cleanup if we still have the target.
+        const n = t.Bo.get(e);
+        null !== n && (lo(t.remoteStore, n), t.Bo = t.Bo.remove(e), t.Uo.delete(n), Ea(t));
+    }
+
+    function pa(t, e, n) {
+        for (const s of n) if (s instanceof Zo) t.qo.addReference(s.key, e), Ta(t, s); else if (s instanceof ta) {
+            $("SyncEngine", "Document no longer in limbo: " + s.key), t.qo.removeReference(s.key, e);
+            t.qo.containsKey(s.key) || 
+            // We removed the last reference for this key
+            ya(t, s.key);
+        } else L();
+    }
+
+    function Ta(t, e) {
+        const n = e.key, s = n.path.canonicalString();
+        t.Bo.get(n) || t.Lo.has(s) || ($("SyncEngine", "New document in limbo: " + n), t.Lo.add(s), 
+        Ea(t));
+    }
+
+    /**
+     * Starts listens for documents in limbo that are enqueued for resolution,
+     * subject to a maximum number of concurrent resolutions.
+     *
+     * Without bounding the number of concurrent resolutions, the server can fail
+     * with "resource exhausted" errors which can lead to pathological client
+     * behavior as seen in https://github.com/firebase/firebase-js-sdk/issues/2683.
+     */ function Ea(t) {
+        for (;t.Lo.size > 0 && t.Bo.size < t.maxConcurrentLimboResolutions; ) {
+            const e = t.Lo.values().next().value;
+            t.Lo.delete(e);
+            const n = new St(dt.fromString(e)), s = t.Qo.next();
+            t.Uo.set(s, new sa(n)), t.Bo = t.Bo.insert(n, s), ho(t.remoteStore, new ai(Re(ge(n.path)), s, 2 /* LimboResolution */ , et.I));
+        }
+    }
+
     async function Ia(t, e, n) {
         const s = q(t), i = [], r = [], o = [];
         s.Oo.isEmpty() || (s.Oo.forEach(((t, a) => {
@@ -11630,6 +13788,28 @@ var app = (function () {
             // TODO(b/114226417): Consider calling this only in the primary tab.
             n.sharedClientState.handleUserChange(e, t.removedBatchIds, t.addedBatchIds), await Ia(n, t.Gn);
         }
+    }
+
+    function Ra(t, e) {
+        const n = q(t), s = n.Uo.get(e);
+        if (s && s.$o) return Sn().add(s.key);
+        {
+            let t = Sn();
+            const s = n.Mo.get(e);
+            if (!s) return t;
+            for (const e of s) {
+                const s = n.Oo.get(e);
+                t = t.unionWith(s.view.Po);
+            }
+            return t;
+        }
+    }
+
+    function xa(t) {
+        const e = q(t);
+        return e.remoteStore.remoteSyncer.applyRemoteEvent = ua.bind(null, e), e.remoteStore.remoteSyncer.getRemoteKeysForTarget = Ra.bind(null, e), 
+        e.remoteStore.remoteSyncer.rejectListen = la.bind(null, e), e.Fo.Pr = Qo.bind(null, e.eventManager), 
+        e.Fo.zo = Wo.bind(null, e.eventManager), e;
     }
 
     function $a(t) {
@@ -11708,6 +13888,71 @@ var app = (function () {
                 // triggering spurious listener events with cached data, etc.
                 e.Jr.set("Unknown" /* Unknown */);
             }(this.remoteStore);
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * On web, a `ReadableStream` is wrapped around by a `ByteStreamReader`.
+     */
+    /**
+     * @license
+     * Copyright 2017 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /*
+     * A wrapper implementation of Observer<T> that will dispatch events
+     * asynchronously. To allow immediate silencing, a mute call is added which
+     * causes events scheduled to no longer be raised.
+     */
+    class qa {
+        constructor(t) {
+            this.observer = t, 
+            /**
+             * When set to true, will not raise future events. Necessary to deal with
+             * async detachment of listener.
+             */
+            this.muted = !1;
+        }
+        next(t) {
+            this.observer.next && this.ea(this.observer.next, t);
+        }
+        error(t) {
+            this.observer.error ? this.ea(this.observer.error, t) : console.error("Uncaught Error in snapshot listener:", t);
+        }
+        na() {
+            this.muted = !0;
+        }
+        ea(t, e) {
+            this.muted || setTimeout((() => {
+                this.muted || t(e);
+            }), 0);
         }
     }
 
@@ -11837,6 +14082,12 @@ var app = (function () {
 
     function tc(t) {
         return Ja(t).then((t => t.syncEngine));
+    }
+
+    async function ec(t) {
+        const e = await Ja(t), n = e.eventManager;
+        return n.onListen = ra.bind(null, e.syncEngine), n.onUnlisten = aa.bind(null, e.syncEngine), 
+        n;
     }
 
     class fc {
@@ -12489,6 +14740,41 @@ var app = (function () {
         }
     }
 
+    function xc(t) {
+        /**
+     * Returns true if obj is an object and contains at least one of the specified
+     * methods.
+     */
+        return function(t, e) {
+            if ("object" != typeof t || null === t) return !1;
+            const n = t;
+            for (const t of e) if (t in n && "function" == typeof n[t]) return !0;
+            return !1;
+        }
+        /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+        /**
+     * Represents the task of loading a Firestore bundle. It provides progress of bundle
+     * loading, as well as task completion and error events.
+     *
+     * The API is compatible with `Promise<LoadBundleTaskProgress>`.
+     */ (t, [ "next", "error", "complete" ]);
+    }
+
     /**
      * The Cloud Firestore service interface.
      *
@@ -12927,6 +15213,16 @@ var app = (function () {
     }
 
     /**
+     * Parse a "query value" (e.g. value in a where filter or a value in a cursor
+     * bound).
+     *
+     * @param allowArrays - Whether the query value is an array that may directly
+     * contain additional arrays (e.g. the operand of an `in` query).
+     */ function Tu(t, e, n, s = !1) {
+        return Eu(n, t.ja(s ? 4 /* ArrayArgument */ : 3 /* Argument */ , e));
+    }
+
+    /**
      * Parses user data to Protobuf Values.
      *
      * @param input - Data to be parsed.
@@ -13145,6 +15441,605 @@ var app = (function () {
      * limitations under the License.
      */
     /**
+     * A `DocumentSnapshot` contains data read from a document in your Firestore
+     * database. The data can be extracted with `.data()` or `.get(<field>)` to
+     * get a specific field.
+     *
+     * For a `DocumentSnapshot` that points to a non-existing document, any data
+     * access will return 'undefined'. You can use the `exists()` method to
+     * explicitly verify a document's existence.
+     */ class Du {
+        // Note: This class is stripped down version of the DocumentSnapshot in
+        // the legacy SDK. The changes are:
+        // - No support for SnapshotMetadata.
+        // - No support for SnapshotOptions.
+        /** @hideconstructor protected */
+        constructor(t, e, n, s, i) {
+            this._firestore = t, this._userDataWriter = e, this._key = n, this._document = s, 
+            this._converter = i;
+        }
+        /** Property of the `DocumentSnapshot` that provides the document's ID. */    get id() {
+            return this._key.path.lastSegment();
+        }
+        /**
+         * The `DocumentReference` for the document included in the `DocumentSnapshot`.
+         */    get ref() {
+            return new Pc(this._firestore, this._converter, this._key);
+        }
+        /**
+         * Signals whether or not the document at the snapshot's location exists.
+         *
+         * @returns true if the document exists.
+         */    exists() {
+            return null !== this._document;
+        }
+        /**
+         * Retrieves all fields in the document as an `Object`. Returns `undefined` if
+         * the document doesn't exist.
+         *
+         * @returns An `Object` containing all fields in the document or `undefined`
+         * if the document doesn't exist.
+         */    data() {
+            if (this._document) {
+                if (this._converter) {
+                    // We only want to use the converter and create a new DocumentSnapshot
+                    // if a converter has been provided.
+                    const t = new Cu(this._firestore, this._userDataWriter, this._key, this._document, 
+                    /* converter= */ null);
+                    return this._converter.fromFirestore(t);
+                }
+                return this._userDataWriter.convertValue(this._document.data.value);
+            }
+        }
+        /**
+         * Retrieves the field specified by `fieldPath`. Returns `undefined` if the
+         * document or field doesn't exist.
+         *
+         * @param fieldPath - The path (for example 'foo' or 'foo.bar') to a specific
+         * field.
+         * @returns The data at the specified field location or undefined if no such
+         * field exists in the document.
+         */
+        // We are using `any` here to avoid an explicit cast by our users.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        get(t) {
+            if (this._document) {
+                const e = this._document.data.field(Nu("DocumentSnapshot.get", t));
+                if (null !== e) return this._userDataWriter.convertValue(e);
+            }
+        }
+    }
+
+    /**
+     * A `QueryDocumentSnapshot` contains data read from a document in your
+     * Firestore database as part of a query. The document is guaranteed to exist
+     * and its data can be extracted with `.data()` or `.get(<field>)` to get a
+     * specific field.
+     *
+     * A `QueryDocumentSnapshot` offers the same API surface as a
+     * `DocumentSnapshot`. Since query results contain only existing documents, the
+     * `exists` property will always be true and `data()` will never return
+     * 'undefined'.
+     */ class Cu extends Du {
+        /**
+         * Retrieves all fields in the document as an `Object`.
+         *
+         * @override
+         * @returns An `Object` containing all fields in the document.
+         */
+        data() {
+            return super.data();
+        }
+    }
+
+    /**
+     * Helper that calls `fromDotSeparatedString()` but wraps any error thrown.
+     */ function Nu(t, e) {
+        return "string" == typeof e ? vu(t, e) : e instanceof Zc ? e._internalPath : e._delegate._internalPath;
+    }
+
+    /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * Metadata about a snapshot, describing the state of the snapshot.
+     */ class ku {
+        /** @hideconstructor */
+        constructor(t, e) {
+            this.hasPendingWrites = t, this.fromCache = e;
+        }
+        /**
+         * Returns true if this `SnapshotMetadata` is equal to the provided one.
+         *
+         * @param other - The `SnapshotMetadata` to compare against.
+         * @returns true if this `SnapshotMetadata` is equal to the provided one.
+         */    isEqual(t) {
+            return this.hasPendingWrites === t.hasPendingWrites && this.fromCache === t.fromCache;
+        }
+    }
+
+    /**
+     * A `DocumentSnapshot` contains data read from a document in your Firestore
+     * database. The data can be extracted with `.data()` or `.get(<field>)` to
+     * get a specific field.
+     *
+     * For a `DocumentSnapshot` that points to a non-existing document, any data
+     * access will return 'undefined'. You can use the `exists()` method to
+     * explicitly verify a document's existence.
+     */ class xu extends Du {
+        /** @hideconstructor protected */
+        constructor(t, e, n, s, i, r) {
+            super(t, e, n, s, r), this._firestore = t, this._firestoreImpl = t, this.metadata = i;
+        }
+        /**
+         * Property of the `DocumentSnapshot` that signals whether or not the data
+         * exists. True if the document exists.
+         */    exists() {
+            return super.exists();
+        }
+        /**
+         * Retrieves all fields in the document as an `Object`. Returns `undefined` if
+         * the document doesn't exist.
+         *
+         * By default, `FieldValue.serverTimestamp()` values that have not yet been
+         * set to their final value will be returned as `null`. You can override
+         * this by passing an options object.
+         *
+         * @param options - An options object to configure how data is retrieved from
+         * the snapshot (for example the desired behavior for server timestamps that
+         * have not yet been set to their final value).
+         * @returns An `Object` containing all fields in the document or `undefined` if
+         * the document doesn't exist.
+         */    data(t = {}) {
+            if (this._document) {
+                if (this._converter) {
+                    // We only want to use the converter and create a new DocumentSnapshot
+                    // if a converter has been provided.
+                    const e = new $u(this._firestore, this._userDataWriter, this._key, this._document, this.metadata, 
+                    /* converter= */ null);
+                    return this._converter.fromFirestore(e, t);
+                }
+                return this._userDataWriter.convertValue(this._document.data.value, t.serverTimestamps);
+            }
+        }
+        /**
+         * Retrieves the field specified by `fieldPath`. Returns `undefined` if the
+         * document or field doesn't exist.
+         *
+         * By default, a `FieldValue.serverTimestamp()` that has not yet been set to
+         * its final value will be returned as `null`. You can override this by
+         * passing an options object.
+         *
+         * @param fieldPath - The path (for example 'foo' or 'foo.bar') to a specific
+         * field.
+         * @param options - An options object to configure how the field is retrieved
+         * from the snapshot (for example the desired behavior for server timestamps
+         * that have not yet been set to their final value).
+         * @returns The data at the specified field location or undefined if no such
+         * field exists in the document.
+         */
+        // We are using `any` here to avoid an explicit cast by our users.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        get(t, e = {}) {
+            if (this._document) {
+                const n = this._document.data.field(Nu("DocumentSnapshot.get", t));
+                if (null !== n) return this._userDataWriter.convertValue(n, e.serverTimestamps);
+            }
+        }
+    }
+
+    /**
+     * A `QueryDocumentSnapshot` contains data read from a document in your
+     * Firestore database as part of a query. The document is guaranteed to exist
+     * and its data can be extracted with `.data()` or `.get(<field>)` to get a
+     * specific field.
+     *
+     * A `QueryDocumentSnapshot` offers the same API surface as a
+     * `DocumentSnapshot`. Since query results contain only existing documents, the
+     * `exists` property will always be true and `data()` will never return
+     * 'undefined'.
+     */ class $u extends xu {
+        /**
+         * Retrieves all fields in the document as an `Object`.
+         *
+         * By default, `FieldValue.serverTimestamp()` values that have not yet been
+         * set to their final value will be returned as `null`. You can override
+         * this by passing an options object.
+         *
+         * @override
+         * @param options - An options object to configure how data is retrieved from
+         * the snapshot (for example the desired behavior for server timestamps that
+         * have not yet been set to their final value).
+         * @returns An `Object` containing all fields in the document.
+         */
+        data(t = {}) {
+            return super.data(t);
+        }
+    }
+
+    /**
+     * A `QuerySnapshot` contains zero or more `DocumentSnapshot` objects
+     * representing the results of a query. The documents can be accessed as an
+     * array via the `docs` property or enumerated using the `forEach` method. The
+     * number of documents can be determined via the `empty` and `size`
+     * properties.
+     */ class Fu {
+        /** @hideconstructor */
+        constructor(t, e, n, s) {
+            this._firestore = t, this._userDataWriter = e, this._snapshot = s, this.metadata = new ku(s.hasPendingWrites, s.fromCache), 
+            this.query = n;
+        }
+        /** An array of all the documents in the `QuerySnapshot`. */    get docs() {
+            const t = [];
+            return this.forEach((e => t.push(e))), t;
+        }
+        /** The number of documents in the `QuerySnapshot`. */    get size() {
+            return this._snapshot.docs.size;
+        }
+        /** True if there are no documents in the `QuerySnapshot`. */    get empty() {
+            return 0 === this.size;
+        }
+        /**
+         * Enumerates all of the documents in the `QuerySnapshot`.
+         *
+         * @param callback - A callback to be called with a `QueryDocumentSnapshot` for
+         * each document in the snapshot.
+         * @param thisArg - The `this` binding for the callback.
+         */    forEach(t, e) {
+            this._snapshot.docs.forEach((n => {
+                t.call(e, new $u(this._firestore, this._userDataWriter, n.key, n, new ku(this._snapshot.mutatedKeys.has(n.key), this._snapshot.fromCache), this.query.converter));
+            }));
+        }
+        /**
+         * Returns an array of the documents changes since the last snapshot. If this
+         * is the first snapshot, all documents will be in the list as 'added'
+         * changes.
+         *
+         * @param options - `SnapshotListenOptions` that control whether metadata-only
+         * changes (i.e. only `DocumentSnapshot.metadata` changed) should trigger
+         * snapshot events.
+         */    docChanges(t = {}) {
+            const e = !!t.includeMetadataChanges;
+            if (e && this._snapshot.excludesMetadataChanges) throw new j(K.INVALID_ARGUMENT, "To include metadata changes with your document changes, you must also pass { includeMetadataChanges:true } to onSnapshot().");
+            return this._cachedChanges && this._cachedChangesIncludeMetadataChanges === e || (this._cachedChanges = 
+            /** Calculates the array of `DocumentChange`s for a given `ViewSnapshot`. */
+            function(t, e) {
+                if (t._snapshot.oldDocs.isEmpty()) {
+                    let e = 0;
+                    return t._snapshot.docChanges.map((n => ({
+                        type: "added",
+                        doc: new $u(t._firestore, t._userDataWriter, n.doc.key, n.doc, new ku(t._snapshot.mutatedKeys.has(n.doc.key), t._snapshot.fromCache), t.query.converter),
+                        oldIndex: -1,
+                        newIndex: e++
+                    })));
+                }
+                {
+                    // A `DocumentSet` that is updated incrementally as changes are applied to use
+                    // to lookup the index of a document.
+                    let n = t._snapshot.oldDocs;
+                    return t._snapshot.docChanges.filter((t => e || 3 /* Metadata */ !== t.type)).map((e => {
+                        const s = new $u(t._firestore, t._userDataWriter, e.doc.key, e.doc, new ku(t._snapshot.mutatedKeys.has(e.doc.key), t._snapshot.fromCache), t.query.converter);
+                        let i = -1, r = -1;
+                        return 0 /* Added */ !== e.type && (i = n.indexOf(e.doc.key), n = n.delete(e.doc.key)), 
+                        1 /* Removed */ !== e.type && (n = n.add(e.doc), r = n.indexOf(e.doc.key)), {
+                            type: Ou(e.type),
+                            doc: s,
+                            oldIndex: i,
+                            newIndex: r
+                        };
+                    }));
+                }
+            }(this, e), this._cachedChangesIncludeMetadataChanges = e), this._cachedChanges;
+        }
+    }
+
+    function Ou(t) {
+        switch (t) {
+          case 0 /* Added */ :
+            return "added";
+
+          case 2 /* Modified */ :
+          case 3 /* Metadata */ :
+            return "modified";
+
+          case 1 /* Removed */ :
+            return "removed";
+
+          default:
+            return L();
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */ function Lu(t) {
+        if (pe(t) && 0 === t.explicitOrderBy.length) throw new j(K.UNIMPLEMENTED, "limitToLast() queries require specifying at least one orderBy() clause");
+    }
+
+    /**
+     * A `QueryConstraint` is used to narrow the set of documents returned by a
+     * Firestore query. `QueryConstraint`s are created by invoking {@link where},
+     * {@link orderBy}, {@link (startAt:1)}, {@link (startAfter:1)}, {@link
+     * endBefore:1}, {@link (endAt:1)}, {@link limit} or {@link limitToLast} and
+     * can then be passed to {@link query} to create a new query instance that
+     * also contains this `QueryConstraint`.
+     */ class Bu {}
+
+    /**
+     * Creates a new immutable instance of {@link Query} that is extended to also include
+     * additional query constraints.
+     *
+     * @param query - The {@link Query} instance to use as a base for the new constraints.
+     * @param queryConstraints - The list of {@link QueryConstraint}s to apply.
+     * @throws if any of the provided query constraints cannot be combined with the
+     * existing or new constraints.
+     */ function Uu(t, ...e) {
+        for (const n of e) t = n._apply(t);
+        return t;
+    }
+
+    class qu extends Bu {
+        constructor(t, e, n) {
+            super(), this.Ga = t, this.za = e, this.Ha = n, this.type = "where";
+        }
+        _apply(t) {
+            const e = hu(t.firestore), n = function(t, e, n, s, i, r, o) {
+                let a;
+                if (i.isKeyField()) {
+                    if ("array-contains" /* ARRAY_CONTAINS */ === r || "array-contains-any" /* ARRAY_CONTAINS_ANY */ === r) throw new j(K.INVALID_ARGUMENT, `Invalid Query. You can't perform '${r}' queries on FieldPath.documentId().`);
+                    if ("in" /* IN */ === r || "not-in" /* NOT_IN */ === r) {
+                        sh(o, r);
+                        const e = [];
+                        for (const n of o) e.push(nh(s, t, n));
+                        a = {
+                            arrayValue: {
+                                values: e
+                            }
+                        };
+                    } else a = nh(s, t, o);
+                } else "in" /* IN */ !== r && "not-in" /* NOT_IN */ !== r && "array-contains-any" /* ARRAY_CONTAINS_ANY */ !== r || sh(o, r), 
+                a = Tu(n, e, o, 
+                /* allowArrays= */ "in" /* IN */ === r || "not-in" /* NOT_IN */ === r);
+                const c = Zt.create(i, r, a);
+                return function(t, e) {
+                    if (e.V()) {
+                        const n = Ee(t);
+                        if (null !== n && !n.isEqual(e.field)) throw new j(K.INVALID_ARGUMENT, `Invalid query. All where filters with an inequality (<, <=, !=, not-in, >, or >=) must be on the same field. But you have inequality filters on '${n.toString()}' and '${e.field.toString()}'`);
+                        const s = Te(t);
+                        null !== s && ih(t, e.field, s);
+                    }
+                    const n = function(t, e) {
+                        for (const n of t.filters) if (e.indexOf(n.op) >= 0) return n.op;
+                        return null;
+                    }(t, 
+                    /**
+     * Given an operator, returns the set of operators that cannot be used with it.
+     *
+     * Operators in a query must adhere to the following set of rules:
+     * 1. Only one array operator is allowed.
+     * 2. Only one disjunctive operator is allowed.
+     * 3. `NOT_EQUAL` cannot be used with another `NOT_EQUAL` operator.
+     * 4. `NOT_IN` cannot be used with array, disjunctive, or `NOT_EQUAL` operators.
+     *
+     * Array operators: `ARRAY_CONTAINS`, `ARRAY_CONTAINS_ANY`
+     * Disjunctive operators: `IN`, `ARRAY_CONTAINS_ANY`, `NOT_IN`
+     */
+                    function(t) {
+                        switch (t) {
+                          case "!=" /* NOT_EQUAL */ :
+                            return [ "!=" /* NOT_EQUAL */ , "not-in" /* NOT_IN */ ];
+
+                          case "array-contains" /* ARRAY_CONTAINS */ :
+                            return [ "array-contains" /* ARRAY_CONTAINS */ , "array-contains-any" /* ARRAY_CONTAINS_ANY */ , "not-in" /* NOT_IN */ ];
+
+                          case "in" /* IN */ :
+                            return [ "array-contains-any" /* ARRAY_CONTAINS_ANY */ , "in" /* IN */ , "not-in" /* NOT_IN */ ];
+
+                          case "array-contains-any" /* ARRAY_CONTAINS_ANY */ :
+                            return [ "array-contains" /* ARRAY_CONTAINS */ , "array-contains-any" /* ARRAY_CONTAINS_ANY */ , "in" /* IN */ , "not-in" /* NOT_IN */ ];
+
+                          case "not-in" /* NOT_IN */ :
+                            return [ "array-contains" /* ARRAY_CONTAINS */ , "array-contains-any" /* ARRAY_CONTAINS_ANY */ , "in" /* IN */ , "not-in" /* NOT_IN */ , "!=" /* NOT_EQUAL */ ];
+
+                          default:
+                            return [];
+                        }
+                    }(e.op));
+                    if (null !== n) 
+                    // Special case when it's a duplicate op to give a slightly clearer error message.
+                    throw n === e.op ? new j(K.INVALID_ARGUMENT, `Invalid query. You cannot use more than one '${e.op.toString()}' filter.`) : new j(K.INVALID_ARGUMENT, `Invalid query. You cannot use '${e.op.toString()}' filters with '${n.toString()}' filters.`);
+                }(t, c), c;
+            }(t._query, "where", e, t.firestore._databaseId, this.Ga, this.za, this.Ha);
+            return new bc(t.firestore, t.converter, function(t, e) {
+                const n = t.filters.concat([ e ]);
+                return new _e(t.path, t.collectionGroup, t.explicitOrderBy.slice(), n, t.limit, t.limitType, t.startAt, t.endAt);
+            }(t._query, n));
+        }
+    }
+
+    /**
+     * Creates a {@link QueryConstraint} that enforces that documents must contain the
+     * specified field and that the value should satisfy the relation constraint
+     * provided.
+     *
+     * @param fieldPath - The path to compare
+     * @param opStr - The operation string (e.g "&lt;", "&lt;=", "==", "&lt;",
+     *   "&lt;=", "!=").
+     * @param value - The value for comparison
+     * @returns The created {@link Query}.
+     */ function Ku(t, e, n) {
+        const s = e, i = Nu("where", t);
+        return new qu(i, s, n);
+    }
+
+    function nh(t, e, n) {
+        if ("string" == typeof (n = getModularInstance(n))) {
+            if ("" === n) throw new j(K.INVALID_ARGUMENT, "Invalid query. When querying with FieldPath.documentId(), you must provide a valid document ID, but it was an empty string.");
+            if (!Ie(e) && -1 !== n.indexOf("/")) throw new j(K.INVALID_ARGUMENT, `Invalid query. When querying a collection by FieldPath.documentId(), you must provide a plain document ID, but '${n}' contains a '/' character.`);
+            const s = e.path.child(dt.fromString(n));
+            if (!St.isDocumentKey(s)) throw new j(K.INVALID_ARGUMENT, `Invalid query. When querying a collection group by FieldPath.documentId(), the value provided must result in a valid document path, but '${s}' is not because it has an odd number of segments (${s.length}).`);
+            return Ot(t, new St(s));
+        }
+        if (n instanceof Pc) return Ot(t, n._key);
+        throw new j(K.INVALID_ARGUMENT, `Invalid query. When querying with FieldPath.documentId(), you must provide a valid string or a DocumentReference, but it was: ${pc(n)}.`);
+    }
+
+    /**
+     * Validates that the value passed into a disjunctive filter satisfies all
+     * array requirements.
+     */ function sh(t, e) {
+        if (!Array.isArray(t) || 0 === t.length) throw new j(K.INVALID_ARGUMENT, `Invalid Query. A non-empty array is required for '${e.toString()}' filters.`);
+        if (t.length > 10) throw new j(K.INVALID_ARGUMENT, `Invalid Query. '${e.toString()}' filters support a maximum of 10 elements in the value array.`);
+    }
+
+    function ih(t, e, n) {
+        if (!n.isEqual(e)) throw new j(K.INVALID_ARGUMENT, `Invalid query. You have a where filter with an inequality (<, <=, !=, not-in, >, or >=) on field '${e.toString()}' and so you must also use '${e.toString()}' as your first argument to orderBy(), but your first orderBy() is on field '${n.toString()}' instead.`);
+    }
+
+    /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
+     * Converts Firestore's internal types to the JavaScript types that we expose
+     * to the user.
+     *
+     * @internal
+     */ class rh {
+        convertValue(t, e = "none") {
+            switch (Dt(t)) {
+              case 0 /* NullValue */ :
+                return null;
+
+              case 1 /* BooleanValue */ :
+                return t.booleanValue;
+
+              case 2 /* NumberValue */ :
+                return Et(t.integerValue || t.doubleValue);
+
+              case 3 /* TimestampValue */ :
+                return this.convertTimestamp(t.timestampValue);
+
+              case 4 /* ServerTimestampValue */ :
+                return this.convertServerTimestamp(t, e);
+
+              case 5 /* StringValue */ :
+                return t.stringValue;
+
+              case 6 /* BlobValue */ :
+                return this.convertBytes(It(t.bytesValue));
+
+              case 7 /* RefValue */ :
+                return this.convertReference(t.referenceValue);
+
+              case 8 /* GeoPointValue */ :
+                return this.convertGeoPoint(t.geoPointValue);
+
+              case 9 /* ArrayValue */ :
+                return this.convertArray(t.arrayValue, e);
+
+              case 10 /* ObjectValue */ :
+                return this.convertObject(t.mapValue, e);
+
+              default:
+                throw L();
+            }
+        }
+        convertObject(t, e) {
+            const n = {};
+            return ht(t.fields, ((t, s) => {
+                n[t] = this.convertValue(s, e);
+            })), n;
+        }
+        convertGeoPoint(t) {
+            return new su(Et(t.latitude), Et(t.longitude));
+        }
+        convertArray(t, e) {
+            return (t.values || []).map((t => this.convertValue(t, e)));
+        }
+        convertServerTimestamp(t, e) {
+            switch (e) {
+              case "previous":
+                const n = Rt(t);
+                return null == n ? null : this.convertValue(n, e);
+
+              case "estimate":
+                return this.convertTimestamp(Pt(t));
+
+              default:
+                return null;
+            }
+        }
+        convertTimestamp(t) {
+            const e = Tt(t);
+            return new at(e.seconds, e.nanos);
+        }
+        convertDocumentKey(t, e) {
+            const n = dt.fromString(t);
+            B(As(n));
+            const s = new dc(n.get(1), n.get(3)), i = new St(n.popFirst(5));
+            return s.isEqual(e) || 
+            // TODO(b/64130202): Somehow support foreign references.
+            F(`Document ${i} contains a document reference within a different database (${s.projectId}/${s.database}) which is not supported. It will be treated as a reference in the current database (${e.projectId}/${e.database}) instead.`), 
+            i;
+        }
+    }
+
+    /**
+     * @license
+     * Copyright 2020 Google LLC
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *   http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+    /**
      * Converts custom model object of type T into `DocumentData` by applying the
      * converter if it exists.
      *
@@ -13161,6 +16056,19 @@ var app = (function () {
         s;
     }
 
+    class lh extends rh {
+        constructor(t) {
+            super(), this.firestore = t;
+        }
+        convertBytes(t) {
+            return new eu(t);
+        }
+        convertReference(t) {
+            const e = this.convertDocumentKey(t, this.firestore._databaseId);
+            return new Pc(this.firestore, /* converter= */ null, e);
+        }
+    }
+
     /**
      * Add a new document to specified `CollectionReference` with the given data,
      * assigning it a document ID automatically.
@@ -13175,6 +16083,48 @@ var app = (function () {
         return Ah(n, [ lu(hu(t.firestore), "addDoc", s._key, i, null !== t.converter, {}).toMutation(s._key, Je.exists(!1)) ]).then((() => s));
     }
 
+    function Eh(t, ...e) {
+        var n, s, i;
+        t = getModularInstance(t);
+        let r = {
+            includeMetadataChanges: !1
+        }, o = 0;
+        "object" != typeof e[o] || xc(e[o]) || (r = e[o], o++);
+        const a = {
+            includeMetadataChanges: r.includeMetadataChanges
+        };
+        if (xc(e[o])) {
+            const t = e[o];
+            e[o] = null === (n = t.next) || void 0 === n ? void 0 : n.bind(t), e[o + 1] = null === (s = t.error) || void 0 === s ? void 0 : s.bind(t), 
+            e[o + 2] = null === (i = t.complete) || void 0 === i ? void 0 : i.bind(t);
+        }
+        let c, u, h;
+        if (t instanceof Pc) u = Tc(t.firestore, Oc), h = ge(t._key.path), c = {
+            next: n => {
+                e[o] && e[o](Rh(u, t, n));
+            },
+            error: e[o + 1],
+            complete: e[o + 2]
+        }; else {
+            const n = Tc(t, bc);
+            u = Tc(n.firestore, Oc), h = n._query;
+            const s = new lh(u);
+            c = {
+                next: t => {
+                    e[o] && e[o](new Fu(u, s, n, t));
+                },
+                error: e[o + 1],
+                complete: e[o + 2]
+            }, Lu(t._query);
+        }
+        return function(t, e, n, s) {
+            const i = new qa(s), r = new zo(e, i, n);
+            return t.asyncQueue.enqueueAndForget((async () => Ko(await ec(t), r))), () => {
+                i.na(), t.asyncQueue.enqueueAndForget((async () => jo(await ec(t), r)));
+            };
+        }(Bc(u), h, a, c);
+    }
+
     /**
      * Locally writes `mutations` on the async queue.
      * @internal
@@ -13183,6 +16133,14 @@ var app = (function () {
             const n = new Q;
             return t.asyncQueue.enqueueAndForget((async () => ca(await tc(t), e, n))), n.promise;
         }(Bc(t), e);
+    }
+
+    /**
+     * Converts a {@link ViewSnapshot} that contains the single document specified by `ref`
+     * to a {@link DocumentSnapshot}.
+     */ function Rh(t, e, n) {
+        const s = n.docs.get(e._key), i = new lh(t);
+        return new xu(t, i, e._key, s, new ku(n.hasPendingWrites, n.fromCache), e.converter);
     }
 
     /**
@@ -13223,6 +16181,54 @@ var app = (function () {
      */
     registerVersion(name, version, 'app');
 
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = new Set();
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (const subscriber of subscribers) {
+                        subscriber[1]();
+                        subscriber_queue.push(subscriber, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.add(subscriber);
+            if (subscribers.size === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                subscribers.delete(subscriber);
+                if (subscribers.size === 0) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
     // Import the functions you need from the SDKs you need
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
@@ -13240,11 +16246,31 @@ var app = (function () {
     // Initialize Firebase
     initializeApp(firebaseConfig);
     const db = Lc();
-    Vc(db, "notes");
+    const colRef = Vc(db, "notes");
+    const userQuery = Uu(colRef, Ku('username', '==', 'btylerh7'));
+    // Create store of user's notes
+    // export const userNotes = writable({
+    //   notes: 
+    // })
+    const userNotes = writable([]);
+
+    Eh(userQuery, (snapshot) => {
+      snapshot.docs.forEach(doc => {
+        let currentDoc = {...doc.data(), id: doc.id};
+        userNotes.update(currentList => {
+
+          currentList = [...currentList, currentDoc];
+          
+          return currentList
+          
+          });
+          
+      });
+    });
 
     /* src/components/Editor.svelte generated by Svelte v3.44.3 */
 
-    const { console: console_1 } = globals;
+    const { console: console_1$1 } = globals;
     const file$2 = "src/components/Editor.svelte";
 
     function create_fragment$2(ctx) {
@@ -13403,7 +16429,7 @@ var app = (function () {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<Editor> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1$1.warn(`<Editor> was created with unknown prop '${key}'`);
     	});
 
     	function input0_input_handler() {
@@ -13469,6 +16495,7 @@ var app = (function () {
 
     /* src/components/Sidebar.svelte generated by Svelte v3.44.3 */
 
+    const { console: console_1 } = globals;
     const file$1 = "src/components/Sidebar.svelte";
 
     function create_fragment$1(ctx) {
@@ -13490,11 +16517,11 @@ var app = (function () {
     			t3 = space();
     			p2 = element("p");
     			p2.textContent = "Music";
-    			add_location(p0, file$1, 3, 4, 12);
-    			add_location(p1, file$1, 4, 4, 32);
-    			add_location(p2, file$1, 5, 4, 55);
+    			add_location(p0, file$1, 6, 4, 111);
+    			add_location(p1, file$1, 7, 4, 131);
+    			add_location(p2, file$1, 8, 4, 154);
     			attr_dev(nav, "class", "svelte-17ddt59");
-    			add_location(nav, file$1, 2, 0, 2);
+    			add_location(nav, file$1, 5, 0, 101);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13526,15 +16553,20 @@ var app = (function () {
     	return block;
     }
 
-    function instance$1($$self, $$props) {
+    function instance$1($$self, $$props, $$invalidate) {
+    	let $userNotes;
+    	validate_store(userNotes, 'userNotes');
+    	component_subscribe($$self, userNotes, $$value => $$invalidate(0, $userNotes = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Sidebar', slots, []);
+    	console.log($userNotes);
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Sidebar> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<Sidebar> was created with unknown prop '${key}'`);
     	});
 
+    	$$self.$capture_state = () => ({ userNotes, $userNotes });
     	return [];
     }
 
